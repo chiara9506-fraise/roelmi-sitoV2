@@ -1,0 +1,704 @@
+/* ==========================================================================
+   About us
+   1 Apertura: video + "RO · EL · MI" che si apre nei nomi (scuro)
+   2 La storia (chiaro) · 3 What we do + NIP® (scuro) · 4 Approach: 3 fasi
+   in sequenza (chiaro) · 5 Timeline orizzontale (scuro) · 6 Sedi: mappa +
+   elenco (chiaro) · 7 Partner (scuro) · 8 Chiusura: Ingredient Finder
+   Usa il sistema comune di base.css; mappa e punti da presence.css.
+   ========================================================================== */
+
+.ab-section-title {
+  font-family: var(--font-display);
+  font-size: var(--fs-section);
+  font-weight: 500;
+  line-height: 1;
+  letter-spacing: -0.045em;
+  color: var(--fg);
+}
+
+.ab-section-title span:not(.eyebrow) {
+  display: block;
+  margin-top: 1rem;
+}
+
+.ab-story strong,
+.ab-approach strong {
+  font-weight: 600;
+}
+
+/* --------------------------------------------------------------------------
+   1 · Apertura
+   Velo 0.62 + sfumatura in basso: il video arriva a 210/255 nei punti più
+   chiari, il testo piccolo resta ≥ 4.5:1
+   -------------------------------------------------------------------------- */
+
+.ab-hero {
+  position: relative;
+  isolation: isolate;
+  background-color: var(--hard-grey);
+  color: var(--ricepaper);
+}
+
+.ab-hero-media {
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+}
+
+.ab-video {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.ab-hero-scrim {
+  position: absolute;
+  inset: 0;
+  background-color: rgba(25, 25, 25, 0.62);
+  background-image: linear-gradient(180deg, rgba(25, 25, 25, 0) 40%, rgba(25, 25, 25, 0.6) 100%);
+}
+
+.ab-hero-inner {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+  min-height: 100svh;
+  padding-top: calc(var(--header-h) + 0.5rem);
+  padding-bottom: clamp(4.5rem, 3rem + 4vw, 7rem);
+}
+
+.ab-breadcrumb ol {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0 0.5rem;
+  font-size: var(--fs-small);
+}
+
+.ab-breadcrumb li {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.ab-breadcrumb li + li::before {
+  content: "/";
+}
+
+.ab-breadcrumb a {
+  display: inline-flex;
+  align-items: center;
+  min-height: 44px;
+  color: var(--ricepaper);
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+
+.ab-breadcrumb a[aria-current="page"] {
+  text-decoration: none;
+  font-weight: 600;
+}
+
+.ab-title {
+  margin-top: auto;
+  font-family: var(--font-display);
+  font-size: clamp(1.5rem, 1.1rem + 1.4vw, 2.5rem);
+  font-weight: 500;
+  letter-spacing: -0.03em;
+  color: var(--ricepaper);
+}
+
+.ab-title span:not(.eyebrow) {
+  display: block;
+  margin-top: 0.75rem;
+}
+
+/* Il nome: RO · EL · MI, poi ogni sillaba si apre nel nome intero */
+.ab-name {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  column-gap: 0.25em;
+  margin-top: clamp(1rem, 0.5rem + 1.5vw, 2rem);
+  font-family: var(--font-display);
+  font-size: clamp(2.75rem, 1rem + 5.2vw, 6.75rem);
+  font-weight: 500;
+  line-height: 1;
+  letter-spacing: -0.05em;
+  color: var(--ricepaper);
+}
+
+.ab-syl {
+  display: inline-flex;
+  align-items: baseline;
+}
+
+.ab-syl b {
+  font-weight: 500;
+}
+
+/* La parte nascosta del nome: si apre allargando la colonna da 0 a 1fr */
+.ab-tail {
+  display: inline-grid;
+  grid-template-columns: 0fr;
+  transition: grid-template-columns 1.3s var(--ease-out);
+}
+
+.ab-tail > span {
+  overflow: hidden;
+  font-weight: 300;
+  white-space: nowrap;
+}
+
+.ab-dot {
+  color: var(--ocean-on-dark);
+}
+
+.ab-hero.is-expanded .ab-tail {
+  grid-template-columns: 1fr;
+}
+
+.ab-hero.is-expanded .ab-syl:nth-child(3) .ab-tail { transition-delay: 0.18s; }
+.ab-hero.is-expanded .ab-syl:nth-child(5) .ab-tail { transition-delay: 0.36s; }
+
+.ab-hpc {
+  display: flex;
+  align-items: baseline;
+  gap: 0.75rem;
+  margin-top: 1rem;
+  font-size: var(--fs-lead);
+  color: var(--ricepaper);
+}
+
+.ab-hpc b {
+  font-family: var(--font-display);
+  font-weight: 500;
+  letter-spacing: -0.02em;
+}
+
+.ab-hpc span {
+  opacity: 0;
+  transition: opacity 0.9s var(--ease-out) 0.8s;
+}
+
+.ab-hero.is-expanded .ab-hpc span {
+  opacity: 1;
+}
+
+/* Senza JS il nome è già aperto */
+.no-js .ab-tail {
+  grid-template-columns: 1fr;
+}
+
+.no-js .ab-hpc span {
+  opacity: 1;
+}
+
+/* Stop animation in basso a destra, su una pillola di vetro */
+.ab-motion {
+  position: absolute;
+  right: var(--gutter);
+  bottom: clamp(1.25rem, 1rem + 1vw, 2rem);
+  padding-inline: 1rem;
+  border-radius: 999px;
+  background-color: var(--glass-dark-bg);
+  -webkit-backdrop-filter: var(--glass-blur);
+  backdrop-filter: var(--glass-blur);
+  box-shadow: var(--glass-dark-line);
+  color: var(--ricepaper);
+}
+
+/* --------------------------------------------------------------------------
+   2 · La storia
+   -------------------------------------------------------------------------- */
+
+.ab-story-grid {
+  display: grid;
+  grid-template-columns: minmax(0, 1.25fr) minmax(0, 0.75fr);
+  align-items: start;
+  gap: clamp(1.5rem, 1rem + 4vw, 6rem);
+}
+
+.ab-lead {
+  font-family: var(--font-display);
+  font-size: clamp(1.25rem, 1rem + 1vw, 1.875rem);
+  font-weight: 400;
+  line-height: 1.35;
+  letter-spacing: -0.02em;
+  color: var(--hard-grey);
+}
+
+.ab-text {
+  max-width: 60ch;
+  margin-top: 1.5rem;
+  color: var(--muted);
+}
+
+.ab-text a {
+  color: var(--hard-grey);
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+
+.ab-text a:hover {
+  color: var(--ocean);
+}
+
+.ab-photo-placeholder {
+  display: grid;
+  place-items: center;
+  aspect-ratio: 4 / 5;
+  padding: 1rem;
+  border: 1px dashed var(--hard-grey);
+  border-radius: var(--r-card);
+  font-size: var(--fs-small);
+  color: var(--muted);
+  text-align: center;
+}
+
+/* --------------------------------------------------------------------------
+   3 · What we do everyday + NIP®
+   -------------------------------------------------------------------------- */
+
+.ab-statement {
+  max-width: 32ch;
+  margin-top: var(--title-gap);
+  margin-left: auto;
+  font-family: var(--font-display);
+  font-size: clamp(1.375rem, 1rem + 1.6vw, 2.5rem);
+  font-weight: 500;
+  line-height: 1.2;
+  letter-spacing: -0.03em;
+  color: var(--ricepaper);
+}
+
+.ab-statement a {
+  text-decoration: underline;
+  text-decoration-thickness: 1px;
+  text-underline-offset: 0.15em;
+}
+
+.ab-statement a:hover,
+.ab-statement strong {
+  color: var(--ocean-on-dark);
+}
+
+.ab-statement strong {
+  font-weight: 500;
+}
+
+.ab-nip {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+  align-items: end;
+  gap: clamp(1.5rem, 1rem + 4vw, 6rem);
+  margin-top: var(--section-y);
+  padding-top: var(--title-gap);
+  border-top: 1px solid var(--line-on-dark);
+}
+
+.ab-nip-word {
+  font-family: var(--font-display);
+  font-size: clamp(2.5rem, 1.2rem + 4.5vw, 6rem);
+  font-weight: 300;
+  line-height: 1;
+  letter-spacing: -0.05em;
+  color: var(--ricepaper);
+}
+
+.ab-nip-word b {
+  font-weight: 500;
+  color: var(--ocean-on-dark);
+}
+
+.ab-nip-text p {
+  color: var(--ricepaper);
+}
+
+.ab-nip-text a:not(.btn) {
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+
+.ab-nip-text strong {
+  font-weight: 600;
+}
+
+.ab-nip-text .btn {
+  margin-top: 1.25rem;
+}
+
+/* --------------------------------------------------------------------------
+   4 · Our Approach: 3 fasi con una linea che si riempie scorrendo
+   -------------------------------------------------------------------------- */
+
+.ab-approach-head {
+  display: grid;
+  grid-template-columns: minmax(0, 0.8fr) minmax(0, 1.2fr);
+  align-items: start;
+  gap: clamp(1.5rem, 1rem + 4vw, 6rem);
+}
+
+.ab-approach-text p {
+  color: var(--muted);
+}
+
+.ab-approach-text p + p {
+  margin-top: 1rem;
+}
+
+.ab-approach-text strong {
+  color: var(--hard-grey);
+}
+
+.ab-steps {
+  position: relative;
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: clamp(1.25rem, 1rem + 2vw, 3rem);
+  margin-top: var(--section-y);
+  padding-top: 2rem;
+}
+
+/* Linea della sequenza: grigia, si riempie in Ocean (--steps-p, da about.js) */
+.ab-steps::before,
+.ab-steps::after {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  height: 2px;
+}
+
+.ab-steps::before {
+  right: 0;
+  background-color: var(--line);
+}
+
+.ab-steps::after {
+  width: calc(var(--steps-p, 1) * 100%);
+  background-color: var(--ocean);
+}
+
+.ab-step-num {
+  display: block;
+  font-family: var(--font-display);
+  font-size: clamp(2.5rem, 1.5rem + 3vw, 4.5rem);
+  font-weight: 500;
+  line-height: 1;
+  letter-spacing: -0.05em;
+  color: var(--muted);
+  transition: color 0.5s var(--ease-out);
+}
+
+.ab-step.is-on .ab-step-num,
+.no-js .ab-step-num {
+  color: var(--ocean);
+}
+
+.ab-step-title {
+  margin-top: 1rem;
+  font-family: var(--font-display);
+  font-size: clamp(1.25rem, 1rem + 0.8vw, 1.75rem);
+  font-weight: 500;
+  letter-spacing: -0.03em;
+  color: var(--hard-grey);
+}
+
+.ab-step p {
+  margin-top: 0.5rem;
+  color: var(--muted);
+}
+
+/* --------------------------------------------------------------------------
+   5 · Timeline orizzontale
+   Con animazione: scena ferma, la riga scorre di lato (about.js imposta
+   l'altezza della sezione e --tl-x). Senza: riga scorrevole a mano.
+   -------------------------------------------------------------------------- */
+
+.ab-timeline {
+  position: relative;
+  background-color: var(--hard-grey);
+  color: var(--ricepaper);
+}
+
+.ab-tl-stage {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: var(--title-gap);
+  padding-block: var(--section-y);
+  overflow: hidden;
+}
+
+.ab-timeline.is-pinned .ab-tl-stage {
+  position: sticky;
+  top: 0;
+  height: 100vh;
+  height: 100svh;
+  padding-top: calc(var(--header-h) + 1rem);
+}
+
+.ab-tl-head {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 2rem;
+}
+
+/* Barra di avanzamento della timeline */
+.ab-tl-progress {
+  position: relative;
+  flex: 0 0 min(30vw, 280px);
+  height: 2px;
+  margin-bottom: 0.6rem;
+  background-color: var(--line-on-dark);
+}
+
+.ab-tl-progress span {
+  position: absolute;
+  inset: 0 auto 0 0;
+  width: calc(var(--tl-p, 0) * 100%);
+  background-color: var(--ocean-on-dark);
+}
+
+.ab-tl-viewport {
+  overflow-x: auto;
+  scroll-snap-type: x mandatory;
+  scrollbar-width: thin;
+}
+
+.ab-timeline.is-pinned .ab-tl-viewport {
+  overflow: visible;
+  scroll-snap-type: none;
+}
+
+.ab-tl-track {
+  display: flex;
+  gap: clamp(1rem, 0.5rem + 1.5vw, 2rem);
+  width: max-content;
+  padding-inline: var(--gutter);
+  transform: translate3d(var(--tl-x, 0px), 0, 0);
+  will-change: transform;
+}
+
+.ab-tl-item {
+  flex: none;
+  width: clamp(240px, 12rem + 12vw, 380px);
+  scroll-snap-align: start;
+}
+
+.ab-tl-media {
+  aspect-ratio: 4 / 3;
+  overflow: hidden;
+  border-radius: var(--r-card);
+}
+
+.ab-tl-media img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.ab-tl-year {
+  margin-top: 1rem;
+  font-family: var(--font-display);
+  font-size: clamp(2.25rem, 1.5rem + 2.5vw, 3.75rem);
+  font-weight: 500;
+  line-height: 1;
+  letter-spacing: -0.05em;
+}
+
+.ab-tl-text {
+  margin-top: 0.75rem;
+  font-size: var(--fs-small);
+  line-height: 1.6;
+  color: var(--ricepaper);
+}
+
+.ab-tl-text a {
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+
+.ab-tl-text a:hover {
+  color: var(--ocean-on-dark);
+}
+
+/* --------------------------------------------------------------------------
+   6 · Sedi: mappa (presence.css) + elenco
+   -------------------------------------------------------------------------- */
+
+.ab-map {
+  margin-top: var(--title-gap);
+}
+
+/* Qui il nome della sede compare semplicemente al passaggio del mouse */
+.ab-map .map-pin:hover .map-pin-label {
+  opacity: 1;
+  transform: translate(-50%, 0);
+}
+
+.ab-sites {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 0 clamp(1.25rem, 1rem + 2vw, 3rem);
+  margin-top: var(--title-gap);
+  border-top: 1px solid var(--hard-grey);
+}
+
+.ab-site {
+  padding: 1.25rem 0;
+  border-bottom: 1px solid var(--line);
+}
+
+.ab-site-country {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: var(--fs-small);
+  font-weight: 600;
+  color: var(--hard-grey);
+}
+
+.ab-site-name {
+  margin-top: 0.4rem;
+  font-family: var(--font-display);
+  font-size: clamp(1.15rem, 1rem + 0.5vw, 1.5rem);
+  font-weight: 500;
+  letter-spacing: -0.025em;
+  color: var(--hard-grey);
+}
+
+.ab-site-extra {
+  margin-top: 0.2rem;
+  font-weight: 600;
+  color: var(--ocean);
+}
+
+.ab-site-details {
+  margin-top: 0.4rem;
+  font-size: var(--fs-small);
+  font-style: italic;
+  color: var(--muted);
+}
+
+/* --------------------------------------------------------------------------
+   7 · Partner (segnaposto)
+   -------------------------------------------------------------------------- */
+
+.ab-logos {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: clamp(0.75rem, 0.5rem + 1vw, 1.25rem);
+  margin-top: var(--title-gap);
+}
+
+.ab-logo {
+  display: grid;
+  place-items: center;
+  aspect-ratio: 3 / 1;
+  padding: 1rem;
+  border: 1px dashed var(--muted-on-dark);
+  border-radius: var(--r-card);
+  font-size: var(--fs-small);
+  color: var(--muted-on-dark);
+  text-align: center;
+}
+
+/* --------------------------------------------------------------------------
+   8 · Chiusura: Ingredient Finder
+   -------------------------------------------------------------------------- */
+
+.ab-close-inner {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  align-items: end;
+  gap: 2rem;
+}
+
+.ab-close-title {
+  max-width: 22ch;
+  font-family: var(--font-display);
+  font-size: var(--fs-section);
+  font-weight: 500;
+  line-height: 1.02;
+  letter-spacing: -0.045em;
+  color: var(--hard-grey);
+}
+
+.ab-close-title span {
+  color: var(--muted);
+}
+
+.ab-close-cta svg {
+  width: 14px;
+  height: 14px;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 2;
+}
+
+/* --------------------------------------------------------------------------
+   Responsive
+   -------------------------------------------------------------------------- */
+
+@media (max-width: 899.98px) {
+  .ab-story-grid,
+  .ab-approach-head,
+  .ab-nip,
+  .ab-close-inner {
+    grid-template-columns: 1fr;
+  }
+
+  .ab-photo-placeholder {
+    aspect-ratio: 16 / 9;
+  }
+
+  .ab-steps {
+    grid-template-columns: 1fr;
+    padding-top: 0;
+    padding-left: 1.5rem;
+  }
+
+  /* Su mobile la linea della sequenza è verticale */
+  .ab-steps::before,
+  .ab-steps::after {
+    top: 0;
+    bottom: 0;
+    left: 0;
+    width: 2px;
+    height: auto;
+  }
+
+  .ab-steps::before {
+    right: auto;
+  }
+
+  .ab-steps::after {
+    bottom: auto;
+    height: calc(var(--steps-p, 1) * 100%);
+  }
+
+  .ab-sites {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .ab-logos {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .ab-tl-progress {
+    display: none;
+  }
+}
+
+@media (max-width: 559.98px) {
+  .ab-sites {
+    grid-template-columns: 1fr;
+  }
+
+  .ab-motion {
+    bottom: auto;
+    top: calc(var(--header-h) + 0.5rem);
+  }
+}

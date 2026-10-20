@@ -1,0 +1,209 @@
+/* ==========================================================================
+   1 · Hero — racconto a scroll in stile Until
+   La scena resta ferma (sticky) mentre si scorre: il video avanza e si
+   ingrandisce (crema → molecola) e le frasi compaiono una alla volta.
+   Senza JS: frasi in colonna sopra il fermo immagine.
+   Con Stop animation / reduced-motion: niente zoom né scrub, le frasi
+   cambiano comunque con lo scroll.
+   ========================================================================== */
+
+.hero {
+  --hero-steps: 4;
+  position: relative;
+  background-color: var(--hard-grey);
+  color: var(--ricepaper);
+}
+
+/* Altezza del racconto: ~90vh di scroll per ogni frase */
+.js .hero {
+  height: calc((var(--hero-steps) * 90 + 100) * 1vh);
+}
+
+/* --------------------------------------------------------------------------
+   Scena
+   -------------------------------------------------------------------------- */
+
+.hero-stage {
+  position: relative;
+  isolation: isolate;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  min-height: 100vh;
+  min-height: 100svh;
+  overflow: hidden;
+}
+
+.js .hero-stage {
+  position: sticky;
+  top: 0;
+  height: 100vh;
+  height: 100svh;
+}
+
+.hero-media {
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+}
+
+.hero-video {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+}
+
+.hero-video {
+  object-fit: cover;
+  transform-origin: 50% 50%;
+  will-change: transform;
+}
+
+/* Velo Hard Grey: leggero in alto, deciso in basso dove stanno le frasi.
+   Calibrato sui fotogrammi più chiari: testi sempre sopra i minimi WCAG. */
+.hero-scrim {
+  position: absolute;
+  inset: 0;
+  background-color: rgba(25, 25, 25, 0.3);
+  background-image: linear-gradient(
+    180deg,
+    rgba(25, 25, 25, 0) 35%,
+    rgba(25, 25, 25, 0.55) 62%,
+    rgba(25, 25, 25, 0.88) 100%
+  );
+}
+
+/* --------------------------------------------------------------------------
+   Frasi del racconto
+   -------------------------------------------------------------------------- */
+
+.hero-story {
+  position: relative;
+  padding: calc(var(--header-h) + 2rem) var(--gutter) clamp(6.5rem, 4.5rem + 5vw, 9rem);
+}
+
+.story-step {
+  display: block;
+  max-width: 18ch;
+  font-family: var(--font-display);
+  font-size: clamp(2rem, 1.3rem + 3vw, 4rem);
+  font-weight: 500;
+  line-height: 1.04;
+  letter-spacing: -0.045em;
+  color: var(--ricepaper);
+  text-shadow: 0 1px 28px rgba(25, 25, 25, 0.3);
+}
+
+/* Prima frase: grande e centrata, come Until */
+.story-step--intro {
+  max-width: none;
+  font-size: clamp(2.5rem, 1.4rem + 4.8vw, 5.75rem);
+  text-align: center;
+}
+
+/* Senza JS: frasi in colonna */
+.story-step + .story-step,
+.hero-title + .story-step {
+  margin-top: 1.5rem;
+}
+
+/* Con JS: tutte nello stesso punto, una alla volta */
+.js .story-step {
+  position: absolute;
+  left: var(--gutter);
+  right: var(--gutter);
+  bottom: clamp(6.5rem, 4.5rem + 5vw, 9rem);
+  margin: 0;
+  /* Nascoste solo alla vista: lo screen reader legge tutte le frasi
+     (con visibility: hidden sentiva solo la prima) */
+  opacity: 0;
+  pointer-events: none;
+}
+
+.js .story-step:not(.story-step--intro) {
+  right: auto;
+}
+
+.js .story-step.is-active {
+  opacity: 1;
+}
+
+/* Finché hero.js non ha preparato le parole, niente lampo di testo.
+   Rete di sicurezza: se lo script non parte, le frasi compaiono dopo 2.5s */
+.js .hero:not(.is-ready) .hero-story {
+  opacity: 0;
+  animation: hero-failsafe 0s linear 2.5s forwards;
+}
+
+@keyframes hero-failsafe {
+  to { opacity: 1; }
+}
+
+.js .hero-story {
+  min-height: 100%;
+}
+
+/* Parole: lo stile (opacità, sfocatura, spostamento) lo calcola hero.js */
+.story-word {
+  display: inline-block;
+  will-change: opacity, transform, filter;
+}
+
+/* --------------------------------------------------------------------------
+   Barra in basso: [ Scroll to discover ] al centro, Stop animation a destra
+   -------------------------------------------------------------------------- */
+
+.hero-bottom {
+  position: absolute;
+  inset: auto 0 0;
+  display: grid;
+  grid-template-columns: 1fr auto 1fr;
+  align-items: center;
+  padding-bottom: clamp(1.25rem, 0.8rem + 1.2vw, 2.25rem);
+}
+
+.hero-cue {
+  grid-column: 2;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.6em;
+  min-height: 44px;
+  padding-inline: 0.5rem;
+  color: var(--ricepaper);
+  transition:
+    color var(--dur-ui) var(--ease-out),
+    opacity 0.5s var(--ease-out),
+    visibility 0s linear 0s;
+}
+
+.hero-cue:hover {
+  color: var(--ocean-on-dark);
+}
+
+.hero-cue.is-hidden {
+  opacity: 0;
+  visibility: hidden;
+  transition:
+    opacity 0.5s var(--ease-out),
+    visibility 0s linear 0.5s;
+}
+
+/* Stile del bottone .motion-toggle: in base.css (lo usa anche il footer) */
+
+/* Telefono: cue a sinistra, toggle a destra */
+@media (max-width: 599.98px) {
+  .hero-bottom {
+    grid-template-columns: auto 1fr;
+  }
+
+  .hero-cue {
+    grid-column: 1;
+    padding-left: 0;
+  }
+
+  .motion-toggle {
+    grid-column: 2;
+    padding-right: 0;
+  }
+}

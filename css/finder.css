@@ -1,0 +1,716 @@
+/* ==========================================================================
+   Ingredient Finder
+   - Apertura: video in loop della texture + vetro scuro con titolo e ricerca
+   - Filtri a pillole in gruppi a tendina (come SITO 1): colonna ferma su
+     desktop, pannello a tutto schermo su mobile
+   - Risultati: schede con la texture dell'ingrediente, vetro chiaro in hover
+   Usa il sistema comune di base.css (vetri, angoli, spazi, bottoni, campo).
+   ========================================================================== */
+
+/* --------------------------------------------------------------------------
+   Apertura
+   -------------------------------------------------------------------------- */
+
+.fx-hero {
+  padding-top: calc(var(--header-h) + 0.5rem);
+}
+
+.fx-stage {
+  position: relative;
+  isolation: isolate;
+  overflow: hidden;
+  display: grid;
+  align-items: end;
+  min-height: min(68vh, 640px);
+  padding: clamp(0.75rem, 0.5rem + 2vw, 2.5rem);
+  border-radius: var(--r-stage);
+}
+
+.fx-bg {
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+}
+
+.fx-video {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.fx-glass {
+  width: min(100%, 720px);
+  padding: clamp(1.25rem, 1rem + 1.5vw, 2.5rem);
+  border-radius: var(--r-card);
+}
+
+.fx-title {
+  font-family: var(--font-display);
+  font-size: var(--fs-section);
+  font-weight: 500;
+  line-height: 1;
+  letter-spacing: -0.045em;
+  color: var(--ricepaper);
+}
+
+.fx-title span:not(.eyebrow) {
+  display: block;
+  margin-top: 1rem;
+}
+
+.fx-intro {
+  max-width: 52ch;
+  margin-top: 1rem;
+  font-size: var(--fs-body);
+  line-height: 1.6;
+  color: var(--ricepaper);
+}
+
+.fx-search {
+  margin-top: 1.5rem;
+}
+
+.fx-search-label {
+  display: block;
+  margin-bottom: 0.6rem;
+  font-size: var(--fs-small);
+  font-weight: 600;
+  color: var(--ricepaper);
+}
+
+/* Stop animation sopra il video: su una pillola di vetro scuro, così il
+   testo resta leggibile su qualsiasi fotogramma */
+.fx-motion {
+  position: absolute;
+  right: clamp(0.75rem, 0.5rem + 1.5vw, 1.75rem);
+  bottom: clamp(0.75rem, 0.5rem + 1.5vw, 1.75rem);
+  padding-inline: 1rem;
+  border-radius: 999px;
+  background-color: var(--glass-dark-bg);
+  -webkit-backdrop-filter: var(--glass-blur);
+  backdrop-filter: var(--glass-blur);
+  box-shadow: var(--glass-dark-line);
+  color: var(--ricepaper);
+}
+
+/* --------------------------------------------------------------------------
+   Layout filtri + risultati
+   -------------------------------------------------------------------------- */
+
+.fx-layout {
+  display: grid;
+  grid-template-columns: minmax(240px, 300px) minmax(0, 1fr);
+  align-items: start;
+  gap: clamp(1.5rem, 1rem + 3vw, 4rem);
+}
+
+/* --------------------------------------------------------------------------
+   Filtri
+   -------------------------------------------------------------------------- */
+
+.fx-filters {
+  position: sticky;
+  top: calc(var(--header-h) + 0.5rem);
+  max-height: calc(100vh - var(--header-h) - 1rem);
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  padding-right: 0.25rem;
+}
+
+.fx-filters-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding-bottom: 0.75rem;
+  border-bottom: 1px solid var(--hard-grey);
+}
+
+.fx-filters-title {
+  font-family: var(--font-display);
+  font-size: clamp(1.25rem, 1.1rem + 0.5vw, 1.5rem);
+  font-weight: 500;
+  letter-spacing: -0.03em;
+}
+
+.fx-filters-close,
+.fx-apply,
+.fx-open {
+  display: none;
+}
+
+/* Gruppo a tendina */
+.fx-group {
+  border-bottom: 1px solid var(--line);
+}
+
+.fx-group > summary {
+  list-style: none;
+  cursor: pointer;
+}
+
+.fx-group > summary::-webkit-details-marker {
+  display: none;
+}
+
+.fx-group-title {
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  min-height: 52px;
+  padding-right: 1.75rem;
+  font-size: var(--fs-small);
+  font-weight: 600;
+  color: var(--hard-grey);
+}
+
+/* Freccia */
+.fx-group-title::after {
+  content: "";
+  position: absolute;
+  right: 0.35rem;
+  top: 50%;
+  width: 8px;
+  height: 8px;
+  border-right: 1.5px solid currentColor;
+  border-bottom: 1.5px solid currentColor;
+  transform: translateY(-70%) rotate(45deg);
+  transition: transform var(--dur-ui) var(--ease-out);
+}
+
+.fx-group[open] .fx-group-title::after {
+  transform: translateY(-30%) rotate(-135deg);
+}
+
+.fx-group > summary:focus-visible {
+  outline-offset: -2px;
+}
+
+/* Numero di filtri scelti nel gruppo */
+.fx-group-count:not(:empty) {
+  display: inline-grid;
+  place-items: center;
+  min-width: 20px;
+  height: 20px;
+  padding: 0 6px;
+  border-radius: 999px;
+  background-color: var(--hard-grey);
+  color: var(--ricepaper);
+  font-size: var(--fs-label);
+  font-weight: 700;
+}
+
+.fx-options {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0 0.4rem;
+  padding-bottom: 0.85rem;
+  border: 0;
+}
+
+/* Benefits: elenco lungo, scorre dentro il gruppo */
+.fx-options--scroll {
+  max-height: 260px;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+}
+
+/* Pillola-filtro: checkbox vero (nascosto alla vista) + pillola.
+   Area di tocco 44px (l'etichetta), pillola visibile 34px */
+.fx-pill {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  min-height: 44px;
+  cursor: pointer;
+}
+
+.fx-pill input {
+  position: absolute;
+  top: 50%;
+  left: 1rem;
+  width: 1px;
+  height: 1px;
+  opacity: 0;
+}
+
+.fx-pill span {
+  display: inline-flex;
+  align-items: center;
+  min-height: 34px;
+  padding: 0 0.85rem;
+  border: 1px solid var(--hard-grey);
+  border-radius: 999px;
+  font-size: 0.8125rem;
+  font-weight: 600;
+  color: var(--hard-grey);
+  transition:
+    background-color var(--dur-ui) var(--ease-out),
+    color var(--dur-ui) var(--ease-out);
+}
+
+/* Spunta: compare solo quando è selezionata (non solo colore) */
+.fx-pill span::before {
+  content: "";
+  width: 0;
+  height: 9px;
+  border-right: 2px solid currentColor;
+  border-bottom: 2px solid currentColor;
+  transform: rotate(45deg) translateY(-2px);
+  opacity: 0;
+}
+
+.fx-pill:hover span {
+  background-color: rgba(25, 25, 25, 0.06);
+}
+
+.fx-pill input:checked + span {
+  background-color: var(--hard-grey);
+  color: var(--ricepaper);
+}
+
+.fx-pill input:checked + span::before {
+  width: 4px;
+  margin-right: 0.45rem;
+  opacity: 1;
+}
+
+.fx-pill input:focus-visible + span {
+  outline: 2px solid var(--ocean);
+  outline-offset: 2px;
+}
+
+.fx-filters-foot {
+  display: flex;
+  gap: 0.5rem;
+  padding-top: 1rem;
+}
+
+/* --------------------------------------------------------------------------
+   Risultati
+   -------------------------------------------------------------------------- */
+
+.fx-results-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  padding-bottom: 0.75rem;
+  border-bottom: 1px solid var(--hard-grey);
+}
+
+.fx-count {
+  font-family: var(--font-display);
+  font-size: clamp(1.25rem, 1.1rem + 0.5vw, 1.5rem);
+  font-weight: 500;
+  letter-spacing: -0.03em;
+}
+
+/* Filtri attivi: pillole con × per toglierli */
+.fx-active {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.25rem 0.4rem;
+  margin-top: 0.75rem;
+}
+
+.fx-active:empty {
+  display: none;
+}
+
+.fx-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  min-height: 44px;
+}
+
+.fx-chip span {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.45rem;
+  min-height: 32px;
+  padding: 0 0.6rem 0 0.85rem;
+  border-radius: 999px;
+  background-color: var(--hard-grey);
+  color: var(--ricepaper);
+  font-size: 0.8125rem;
+  font-weight: 600;
+}
+
+.fx-chip span::after {
+  content: "×";
+  font-size: 1.1em;
+  line-height: 1;
+}
+
+.fx-chip:hover span {
+  background-color: var(--ocean);
+}
+
+.fx-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(min(100%, 260px), 1fr));
+  gap: 2rem clamp(1rem, 0.5rem + 1vw, 1.5rem);
+  margin-top: var(--title-gap);
+}
+
+/* Scheda ingrediente (come le schede della home, su fondo chiaro) */
+.fx-card {
+  position: relative;
+}
+
+.fx-card-name {
+  font-family: var(--font-display);
+  font-size: clamp(1.125rem, 1rem + 0.4vw, 1.375rem);
+  font-weight: 500;
+  line-height: 1.15;
+  letter-spacing: -0.025em;
+  color: var(--hard-grey);
+  transition: color var(--dur-ui) var(--ease-out);
+}
+
+.fx-card-link {
+  color: inherit;
+}
+
+/* Il link è il nome; la sua area cliccabile copre tutta la scheda */
+.fx-card-link::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: 2;
+  border-radius: var(--r-card);
+}
+
+.fx-card-function {
+  margin-top: 0.2rem;
+  font-size: var(--fs-small);
+  color: var(--muted);
+}
+
+.fx-card-media {
+  position: relative;
+  margin-top: 0.85rem;
+  aspect-ratio: 4 / 3;
+  overflow: hidden;
+  border-radius: var(--r-card);
+  background-color: var(--line);
+}
+
+.fx-card-media img {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform 1.2s var(--ease-out);
+}
+
+.fx-card-glass {
+  position: absolute;
+  inset: auto 0.75rem 0.75rem;
+  padding: 1rem 1.1rem;
+  border-radius: var(--r-inner);
+  background-color: var(--glass-light-bg);
+  background-image: var(--glass-light-sheen);
+  -webkit-backdrop-filter: var(--glass-blur);
+  backdrop-filter: var(--glass-blur);
+  box-shadow: var(--glass-light-line);
+  color: var(--hard-grey);
+  font-size: var(--fs-small);
+  line-height: 1.5;
+  opacity: 0;
+  transform: translate3d(0, 14px, 0);
+  transition:
+    opacity 0.45s var(--ease-out),
+    transform 0.6s var(--ease-out);
+}
+
+/* Il vetro non supera mai l'immagine: descrizione fermata a 3 righe
+   (solo a vista: il testo completo resta per lo screen reader) */
+.fx-card-glass {
+  max-height: calc(100% - 1.5rem);
+  overflow: hidden;
+  font-size: 0.8125rem;
+}
+
+.fx-card-glass > p:first-child {
+  display: -webkit-box;
+  -webkit-line-clamp: 3;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+.fx-card-meta {
+  margin-top: 0.5rem;
+  font-weight: 600;
+}
+
+.fx-card-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.3rem;
+  margin-top: 0.5rem;
+}
+
+.fx-card-tags li {
+  padding: 0.15rem 0.6rem;
+  border: 1px solid var(--hard-grey);
+  border-radius: 999px;
+  font-size: var(--fs-label);
+  font-weight: 600;
+}
+
+.fx-card:hover .fx-card-name,
+.fx-card:focus-within .fx-card-name {
+  color: var(--ocean);
+}
+
+.fx-card:hover .fx-card-media img,
+.fx-card:focus-within .fx-card-media img {
+  transform: scale(1.05);
+}
+
+.fx-card:hover .fx-card-glass,
+.fx-card:focus-within .fx-card-glass {
+  opacity: 1;
+  transform: none;
+}
+
+.fx-card-link:focus-visible {
+  outline: none;
+}
+
+.fx-card-link:focus-visible::after {
+  outline: 2px solid var(--ocean);
+  outline-offset: 6px;
+}
+
+.motion-paused .fx-card .fx-card-media img {
+  transform: none;
+}
+
+/* Touch: descrizione sempre visibile, sotto l'immagine */
+@media (hover: none) {
+  .fx-card-media {
+    overflow: visible;
+    aspect-ratio: auto;
+    background: none;
+  }
+
+  .fx-card-media img {
+    position: static;
+    height: auto;
+    aspect-ratio: 4 / 3;
+    border-radius: var(--r-card);
+  }
+
+  .fx-card-glass {
+    position: static;
+    margin-top: 0.75rem;
+    padding: 0;
+    border-radius: 0;
+    background: none;
+    -webkit-backdrop-filter: none;
+    backdrop-filter: none;
+    box-shadow: none;
+    opacity: 1;
+    transform: none;
+  }
+}
+
+/* Nessun risultato */
+.fx-empty {
+  margin-top: var(--title-gap);
+  padding: clamp(2rem, 1rem + 3vw, 4rem) 1.5rem;
+  border: 1px dashed var(--hard-grey);
+  border-radius: var(--r-card);
+  text-align: center;
+}
+
+.fx-empty-title {
+  font-family: var(--font-display);
+  font-size: clamp(1.4rem, 1.1rem + 1vw, 2rem);
+  font-weight: 500;
+  letter-spacing: -0.03em;
+}
+
+.fx-empty p {
+  margin-top: 0.5rem;
+  color: var(--muted);
+}
+
+.fx-empty .btn {
+  margin-top: 1.25rem;
+}
+
+.fx-noscript {
+  margin-top: 1rem;
+}
+
+/* --------------------------------------------------------------------------
+   Mobile / tablet: filtri in un pannello a tutto schermo
+   -------------------------------------------------------------------------- */
+
+@media (max-width: 899.98px) {
+  .fx-layout {
+    grid-template-columns: 1fr;
+  }
+
+  .fx-open {
+    display: inline-flex;
+    gap: 0.4rem;
+  }
+
+  .fx-open-count:not(:empty) {
+    display: inline-grid;
+    place-items: center;
+    min-width: 20px;
+    height: 20px;
+    padding: 0 6px;
+    border-radius: 999px;
+    background-color: var(--hard-grey);
+    color: var(--ricepaper);
+    font-size: var(--fs-label);
+  }
+
+  /* Pannello: nascosto finché non si apre */
+  .fx-filters {
+    position: fixed;
+    inset: 0;
+    z-index: 200;
+    display: flex;
+    flex-direction: column;
+    max-height: none;
+    padding: 1.25rem var(--gutter) 0;
+    background-color: var(--ricepaper);
+    visibility: hidden;
+    opacity: 0;
+    transition: none;
+  }
+
+  .fx-filters.is-open {
+    visibility: visible;
+    opacity: 1;
+    transition: opacity 0.35s var(--ease-out);
+  }
+
+  .fx-filters-close {
+    display: grid;
+    place-items: center;
+    width: 44px;
+    height: 44px;
+    border-radius: 50%;
+  }
+
+  .fx-filters-close svg {
+    width: 20px;
+    height: 20px;
+    fill: none;
+    stroke: currentColor;
+    stroke-width: 1.75;
+  }
+
+  .fx-form {
+    flex: 1;
+    overflow-y: auto;
+  }
+
+  /* Bottoni in fondo al pannello, sempre visibili */
+  .fx-filters-foot {
+    position: sticky;
+    bottom: 0;
+    padding: 0.85rem 0 calc(0.85rem + env(safe-area-inset-bottom));
+    border-top: 1px solid var(--line);
+    background-color: var(--ricepaper);
+  }
+
+  .fx-apply {
+    display: inline-flex;
+    flex: 1;
+  }
+
+  .fx-stage {
+    min-height: min(60vh, 520px);
+  }
+}
+
+@media (max-width: 599.98px) {
+  .fx-stage {
+    min-height: 0;
+    padding: 0.6rem;
+    padding-top: 30vh;
+    border-radius: var(--r-card);
+  }
+
+  .fx-glass {
+    padding: 1.1rem;
+    border-radius: var(--r-inner);
+  }
+
+  /* Su telefono il vetro occupa tutta la parte bassa: il bottone resta in alto */
+  .fx-motion {
+    top: 0.6rem;
+    bottom: auto;
+    right: 0.6rem;
+  }
+}
+
+/* Touch: sotto l'immagine c'è spazio, descrizione intera */
+@media (hover: none) {
+  .fx-card-glass {
+    max-height: none;
+    overflow: visible;
+    font-size: var(--fs-small);
+  }
+
+  .fx-card-glass > p:first-child {
+    display: block;
+    -webkit-line-clamp: unset;
+  }
+}
+
+/* Stati selezionati in Ocean pieno, testo Ricepaper (4.69:1) */
+.fx-pill input:checked + span {
+  border-color: var(--ocean);
+  background-color: var(--ocean);
+  color: var(--ricepaper);
+}
+
+.fx-chip span {
+  background-color: var(--ocean);
+}
+
+.fx-chip:hover span {
+  background-color: var(--hard-grey);
+}
+
+.fx-group-count:not(:empty),
+.fx-open-count:not(:empty) {
+  background-color: var(--ocean);
+}
+
+.fx-card-markets {
+  margin-top: 0.6rem;
+}
+
+/* --------------------------------------------------------------------------
+   Filtri: in hover la pillola si riempie con un accento della palette,
+   testo e bordo Hard Grey (Antique 10.4 · Olive 9.2 · Cerulean 8.9:1).
+   Market usa i colori dei mercati delle schede. Selezionata resta Ocean.
+   -------------------------------------------------------------------------- */
+
+.fx-pill input[name="line"] + span,
+.fx-pill input[name="category"] + span     { --fx-hover: var(--cerulean); }
+.fx-pill input[name="tech"] + span,
+.fx-pill input[name="benefit"] + span      { --fx-hover: var(--olive); }
+.fx-pill input[name="type"] + span,
+.fx-pill input[name="cert"] + span         { --fx-hover: var(--antique); }
+.fx-pill input[value="Personal Care"] + span { --fx-hover: var(--antique); }
+.fx-pill input[value="Nutraceutical"] + span { --fx-hover: var(--olive); }
+
+.fx-pill:hover input:not(:checked) + span {
+  background-color: var(--fx-hover, rgba(25, 25, 25, 0.06));
+  color: var(--hard-grey);
+}

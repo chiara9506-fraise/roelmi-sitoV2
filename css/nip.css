@@ -1,0 +1,287 @@
+/* ==========================================================================
+   6 · NIP® — Our Sustainability Approach (scuro)
+   La texture è in primo piano, a tutta larghezza; i testi stanno in pannelli
+   di vetro scuro, lo stesso vetro della pillola del menu.
+   Tinta del vetro 0.68 + riflesso 0.06: anche sopra un punto bianco della
+   texture il fondo resta ≈ #6B6B6B → testo Ricepaper ≥ 4.5:1.
+   ========================================================================== */
+
+.nip-stage {
+  position: relative;
+  isolation: isolate;
+  overflow: hidden;
+  border-radius: var(--r-stage);
+  padding: clamp(1rem, 0.5rem + 2vw, 2.5rem);
+  min-height: min(92vh, 900px);
+  display: grid;
+  grid-template-columns: repeat(12, minmax(0, 1fr));
+  grid-template-rows: auto 1fr auto;
+  gap: clamp(0.75rem, 0.5rem + 1vw, 1.25rem);
+}
+
+/* Texture (decorativa): zoom lentissimo con lo scroll, gestito da nip.js */
+.nip-texture {
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+}
+
+.nip-texture img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transform-origin: 50% 50%;
+  will-change: transform;
+}
+
+/* Il vetro .glass è in base.css (comune a tutte le pagine) */
+
+/* --------------------------------------------------------------------------
+   Titolo
+   -------------------------------------------------------------------------- */
+
+/* Il box si stringe attorno al titolo (niente vuoto a destra o in alto) */
+.nip-head {
+  grid-column: 1 / -1;
+  grid-row: 1;
+  align-self: start;
+  justify-self: start;
+  width: fit-content;
+  max-width: 100%;
+  padding: clamp(1.25rem, 1rem + 1.2vw, 2.25rem) clamp(1.5rem, 1rem + 2vw, 3rem);
+}
+
+.nip-title {
+  font-family: var(--font-display);
+  font-size: clamp(2.25rem, 1.2rem + 4vw, 5.5rem);
+  font-weight: 500;
+  line-height: 1;
+  letter-spacing: -0.045em;
+  color: var(--ricepaper);
+}
+
+.nip-title span:not(.eyebrow) {
+  display: block;
+  margin-top: 1.25rem;
+}
+
+/* Il titolo sale da una maschera quando il box entra (come le frasi del hero) */
+@media (prefers-reduced-motion: no-preference) {
+  .js .nip-head[data-reveal] .nip-title span:not(.eyebrow) {
+    clip-path: inset(0 0 100% 0);
+    transform: translate3d(0, 0.35em, 0);
+    transition:
+      clip-path 1.1s var(--ease-out) 0.25s,
+      transform 1.1s var(--ease-out) 0.25s;
+  }
+
+  .js .nip-head.is-in .nip-title span:not(.eyebrow) {
+    clip-path: inset(0 0 -0.2em 0);
+    transform: none;
+  }
+}
+
+.motion-paused .nip-head .nip-title span:not(.eyebrow) {
+  clip-path: none !important;
+  transform: none !important;
+}
+
+/* --------------------------------------------------------------------------
+   Numeri: tre pannelli in riga
+   -------------------------------------------------------------------------- */
+
+.nip-stats {
+  grid-column: 1 / -1;
+  grid-row: 3;
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr)) minmax(0, 1.6fr);
+  gap: inherit;
+  align-items: stretch;
+}
+
+/* Numero in alto, didascalia in basso: il box resta pieno anche quando
+   si allunga fino all'altezza del paragrafo */
+.nip-stat > span[aria-hidden] {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  gap: 1.5rem;
+  height: 100%;
+}
+
+.nip-stat .stat-num {
+  display: block;
+  font-family: var(--font-display);
+  font-size: clamp(2.5rem, 1.5rem + 3.4vw, 5rem);
+  font-weight: 500;
+  line-height: 1;
+  letter-spacing: -0.05em;
+  color: var(--ricepaper);
+  font-variant-numeric: tabular-nums;
+}
+
+/* "%" in Ricepaper leggero: l'azzurro sul vetro scendeva a 2.4:1 nel caso
+   peggiore (sotto il 3:1 richiesto) */
+.nip-stat .stat-unit {
+  font-weight: 300;
+  color: var(--ricepaper);
+}
+
+.nip-stat .stat-label {
+  display: block;
+  font-size: var(--fs-body);
+  color: var(--ricepaper);
+}
+
+/* --------------------------------------------------------------------------
+   Paragrafo + link
+   -------------------------------------------------------------------------- */
+
+.nip-text p {
+  font-size: var(--fs-body);
+  line-height: 1.65;
+}
+
+.nip-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+  margin-top: 1.5rem;
+}
+
+.nip-actions svg {
+  width: 14px;
+  height: 14px;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 2;
+}
+
+.nip :focus-visible {
+  outline-color: var(--ricepaper);
+}
+
+/* --------------------------------------------------------------------------
+   Responsive
+   -------------------------------------------------------------------------- */
+
+@media (max-width: 1023.98px) {
+  .nip-head {
+    grid-column: 1 / -1;
+  }
+
+  .nip-stats {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+
+  .nip-text {
+    grid-column: 1 / -1;
+  }
+}
+
+@media (max-width: 599.98px) {
+  .nip-stage {
+    min-height: 0;
+    grid-template-rows: auto;
+  }
+
+  .nip-stats {
+    grid-row: auto;
+    grid-template-columns: 1fr;
+  }
+
+  /* Fascia di texture visibile tra titolo e numeri */
+  .nip-head {
+    margin-bottom: 30vh;
+  }
+}
+
+/* --------------------------------------------------------------------------
+   Mobile: sezione molto più bassa — numeri in una riga compatta,
+   testi più piccoli, poca texture libera tra titolo e numeri
+   -------------------------------------------------------------------------- */
+
+@media (max-width: 599.98px) {
+  .nip-stage {
+    gap: 0.5rem;
+    padding: 0.6rem;
+    border-radius: var(--r-card);
+  }
+
+  .nip-head {
+    margin-bottom: 7vh;
+    padding: 1rem 1.15rem;
+  }
+
+  .nip-title {
+    font-size: 1.85rem;
+  }
+
+  .nip-title span:not(.eyebrow) {
+    margin-top: 0.6rem;
+  }
+
+  .nip-stats {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 0.5rem;
+  }
+
+  .nip-stat {
+    padding: 0.85rem 0.7rem;
+    border-radius: var(--r-inner);
+  }
+
+  .nip-stat > span[aria-hidden] {
+    gap: 0.4rem;
+  }
+
+  .nip-stat .stat-num {
+    font-size: 1.75rem;
+    letter-spacing: -0.04em;
+  }
+
+  .nip-stat .stat-label {
+    font-size: 0.8125rem;
+    line-height: 1.3;
+  }
+
+  .nip-text {
+    grid-column: 1 / -1;
+    padding: 1rem 1.15rem;
+    border-radius: var(--r-inner);
+  }
+
+  .nip-text p {
+    font-size: var(--fs-small);
+    line-height: 1.55;
+  }
+
+  .nip-actions {
+    margin-top: 1rem;
+  }
+}
+
+/* Mobile: margini uniformi — stesso bordo del riquadro, stesso spazio tra i
+   pannelli e stesso spazio interno; titolo largo quanto il riquadro */
+@media (max-width: 599.98px) {
+  .nip-stage {
+    --nip-space: 0.6rem;
+    gap: var(--nip-space);
+    padding: var(--nip-space);
+  }
+
+  .nip-stats {
+    gap: var(--nip-space);
+  }
+
+  .nip-head {
+    width: auto;
+    justify-self: stretch;
+  }
+
+  .nip-head,
+  .nip-text,
+  .nip-stat {
+    padding: 1rem;
+  }
+}

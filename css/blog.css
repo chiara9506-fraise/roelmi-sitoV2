@@ -1,0 +1,289 @@
+/* ==========================================================================
+   8 · Blog (scuro) — lista editoriale. Colori dal tema (--fg, --fg-muted, --accent)
+   Una riga per articolo (categoria · titolo · testo · freccia), separate da
+   una linea sottile. Al passaggio del mouse l'immagine dell'articolo compare
+   e segue il cursore (decorativa). Su touch: miniatura dentro la riga.
+   ========================================================================== */
+
+.blog-head {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  align-items: end;
+  gap: clamp(1.5rem, 1rem + 3vw, 4rem);
+}
+
+.blog-title {
+  font-family: var(--font-display);
+  font-size: var(--fs-section);
+  font-weight: 500;
+  line-height: 1;
+  letter-spacing: -0.045em;
+  color: var(--fg);
+}
+
+.blog-title span:not(.eyebrow) {
+  display: block;
+  margin-top: 1.25rem;
+}
+
+/* Testo e bottone: blocco stretto, allineato al bordo destro e alla base
+   del titolo (prima partiva a metà e lasciava un vuoto) */
+.blog-intro {
+  max-width: 36ch;
+  justify-self: end;
+}
+
+.blog-intro p {
+  font-size: var(--fs-body);
+  line-height: 1.6;
+  color: var(--fg-muted);
+}
+
+/* Niente frase evidenziata in colore */
+.blog-intro strong {
+  font-weight: inherit;
+}
+
+.blog-intro .btn {
+  margin-top: 1.25rem;
+}
+
+.blog .btn svg {
+  width: 14px;
+  height: 14px;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 2;
+}
+
+/* --------------------------------------------------------------------------
+   Lista
+   -------------------------------------------------------------------------- */
+
+.blog-list {
+  position: relative;
+  margin-top: var(--title-gap);
+  border-top: 1px solid var(--fg);
+}
+
+.post {
+  position: relative;
+  display: grid;
+  grid-template-columns: minmax(0, 2fr) minmax(0, 5fr) minmax(0, 4fr) auto;
+  align-items: center;
+  gap: clamp(1rem, 0.5rem + 2vw, 3rem);
+  padding-block: clamp(1.25rem, 1rem + 1vw, 2rem);
+  border-bottom: 1px solid var(--rule);
+  transition: padding 0.5s var(--ease-out);
+}
+
+.post-cat {
+  font-size: var(--fs-small);
+  font-weight: 600;
+  letter-spacing: 0.01em;
+  color: var(--fg-muted);
+}
+
+.post-title {
+  font-family: var(--font-display);
+  font-size: clamp(1.4rem, 1rem + 1.4vw, 2.25rem);
+  font-weight: 500;
+  line-height: 1.1;
+  letter-spacing: -0.035em;
+  color: var(--fg);
+  transition: color var(--dur-ui) var(--ease-out);
+}
+
+/* Il link è il titolo; la sua area cliccabile copre tutta la riga */
+.post-link {
+  color: inherit;
+}
+
+.post-link::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+}
+
+.post-text {
+  font-size: var(--fs-small);
+  line-height: 1.6;
+  color: var(--fg-muted);
+}
+
+/* "Read more" + freccia in un cerchio */
+.post-more {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.75rem;
+  font-size: var(--fs-small);
+  font-weight: 600;
+  color: var(--fg);
+  white-space: nowrap;
+}
+
+.post-arrow {
+  display: grid;
+  place-items: center;
+  width: 44px;
+  height: 44px;
+  border: 1px solid var(--fg);
+  border-radius: 50%;
+  transition:
+    background-color var(--dur-ui) var(--ease-out),
+    color var(--dur-ui) var(--ease-out),
+    transform 0.5s var(--ease-out);
+}
+
+.post-arrow svg {
+  width: 16px;
+  height: 16px;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 1.75;
+}
+
+/* Hover / focus della riga */
+.post:hover .post-title,
+.post:focus-within .post-title {
+  color: var(--accent);
+}
+
+.post:hover .post-arrow,
+.post:focus-within .post-arrow {
+  background-color: var(--fg);
+  color: var(--bg);
+  transform: rotate(-45deg);
+}
+
+/* Focus da tastiera: contorno attorno a tutta la riga */
+.post-link:focus-visible {
+  outline: none;
+}
+
+.post-link:focus-visible::after {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
+  border-radius: 6px;
+}
+
+/* Miniatura dentro la riga: nascosta dove c'è il mouse (lì c'è l'anteprima) */
+.post-thumb {
+  display: none;
+}
+
+/* --------------------------------------------------------------------------
+   Anteprima che segue il cursore (solo dispositivi con mouse)
+   -------------------------------------------------------------------------- */
+
+.blog-preview {
+  position: absolute;
+  top: 0;
+  left: 0;
+  z-index: 2;
+  width: clamp(220px, 12rem + 8vw, 340px);
+  aspect-ratio: 4 / 3;
+  overflow: hidden;
+  border-radius: var(--r-card);
+  pointer-events: none;
+  opacity: 0;
+  scale: 0.9;   /* la posizione la gestisce blog.js con "transform" */
+  transition:
+    opacity 0.35s var(--ease-out),
+    scale 0.35s var(--ease-out);
+  will-change: transform;
+}
+
+.blog-preview.is-visible {
+  opacity: 1;
+  scale: 1;
+}
+
+.blog-preview img {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  opacity: 0;
+  transition: opacity 0.35s var(--ease-out);
+}
+
+.blog-preview img.is-current {
+  opacity: 1;
+}
+
+/* --------------------------------------------------------------------------
+   Responsive
+   -------------------------------------------------------------------------- */
+
+@media (max-width: 1023.98px) {
+  .post {
+    grid-template-columns: minmax(0, 1fr) auto;
+    row-gap: 0.5rem;
+  }
+
+  .post-cat,
+  .post-title,
+  .post-text {
+    grid-column: 1;
+  }
+
+  .post-more {
+    grid-column: 2;
+    grid-row: 1 / span 3;
+  }
+
+  .post-more-text {
+    display: none;
+  }
+}
+
+@media (max-width: 699.98px) {
+  .blog-head {
+    grid-template-columns: 1fr;
+  }
+
+  .blog-intro {
+    justify-self: start;
+  }
+}
+
+/* Touch: niente anteprima, miniatura dentro la riga */
+@media (hover: none) {
+  .blog-preview {
+    display: none;
+  }
+
+  .post {
+    grid-template-columns: 96px minmax(0, 1fr) auto;
+  }
+
+  .post-thumb {
+    display: block;
+    grid-column: 1;
+    grid-row: 1 / span 3;
+    align-self: start;
+    width: 96px;
+    aspect-ratio: 1;
+    overflow: hidden;
+    border-radius: var(--r-inner);
+  }
+
+  .post-thumb img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+
+  .post-cat,
+  .post-title,
+  .post-text {
+    grid-column: 2;
+  }
+
+  .post-more {
+    grid-column: 3;
+  }
+}

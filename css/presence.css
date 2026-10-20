@@ -1,0 +1,561 @@
+/* ==========================================================================
+   7 · Global Presence (chiaro) — mappa a puntini + elenco delle sedi
+   - Un colore per categoria (tutti ≥ 4.4:1 sul Ricepaper; per i punti
+     basta 3:1). Il colore non è mai l'unica informazione: c'è sempre il
+     nome della categoria (filtri, titoli dell'elenco, scheda).
+   - Clic su una sede (elenco o mappa) → scheda con i dettagli
+   ========================================================================== */
+
+.presence {
+  /* Colori della palette ROELMI. Gli accenti chiari (Cerulean, Antique,
+     Olive) su fondo chiaro hanno sempre un bordo Hard Grey: è il bordo a
+     dare il contrasto (15.9:1), il colore riempie l'interno */
+  --cat-site: var(--ocean);         /* Production hubs */
+  --cat-branch: var(--antique);     /* Subsidiaries */
+  --cat-biotech: #8375B4;           /* ROELMI BIOTECH (colore dedicato, su Ricepaper 3.7:1, anello Hard Grey) */
+  --cat-lab: var(--cerulean);       /* Labs */
+  --cat-production: var(--hard-grey); /* Manufacturing */
+}
+
+.cat--site       { --cat: var(--cat-site); }
+.cat--branch     { --cat: var(--cat-branch); }
+.cat--biotech    { --cat: var(--cat-biotech); }
+.cat--lab        { --cat: var(--cat-lab); }
+.cat--production { --cat: var(--cat-production); }
+
+.cat-dot {
+  display: inline-block;
+  flex: none;
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background-color: var(--cat, var(--hard-grey));
+}
+
+.presence-title {
+  font-family: var(--font-display);
+  font-size: var(--fs-section);
+  font-weight: 500;
+  line-height: 1;
+  letter-spacing: -0.045em;
+  color: var(--hard-grey);
+}
+
+.presence-title span:not(.eyebrow) {
+  display: block;
+  margin-top: 1.25rem;
+}
+
+/* --------------------------------------------------------------------------
+   Filtri (fanno anche da legenda)
+   -------------------------------------------------------------------------- */
+
+.presence-filters {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  margin-top: var(--title-gap);
+}
+
+.filter-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  min-height: 44px;
+  padding: 0 1.1rem;
+  border: 1px solid var(--hard-grey);
+  border-radius: 999px;
+  font-size: var(--fs-small);
+  font-weight: 600;
+  color: var(--hard-grey);
+  transition:
+    background-color var(--dur-ui) var(--ease-out),
+    color var(--dur-ui) var(--ease-out);
+}
+
+.filter-pill:hover {
+  background-color: rgba(25, 25, 25, 0.06);
+}
+
+.filter-pill[aria-pressed="true"] {
+  background-color: var(--hard-grey);
+  color: var(--ricepaper);
+}
+
+/* Sul pieno scuro il puntino ha un bordo chiaro per staccarsi */
+.filter-pill[aria-pressed="true"] .cat-dot {
+  box-shadow: 0 0 0 2px var(--ricepaper);
+}
+
+/* --------------------------------------------------------------------------
+   Mappa
+   -------------------------------------------------------------------------- */
+
+.presence-stage {
+  position: relative;
+  margin-top: clamp(1.5rem, 1rem + 2vw, 3rem);
+}
+
+.presence-map {
+  position: relative;
+  aspect-ratio: 1000 / 394;
+}
+
+.presence-map > img {
+  width: 100%;
+  height: 100%;
+}
+
+.map-pin {
+  position: absolute;
+  width: 0;
+  height: 0;
+}
+
+/* Punto: grande, colore della categoria, bordo chiaro + alone per staccarsi */
+.map-pin::before {
+  content: "";
+  position: absolute;
+  left: -10px;
+  top: -10px;
+  width: 20px;
+  height: 20px;
+  border: 3px solid var(--ricepaper);
+  border-radius: 50%;
+  background: var(--cat, var(--hard-grey));
+  box-shadow: 0 0 0 1px rgba(25, 25, 25, 0.25), 0 2px 10px rgba(25, 25, 25, 0.25);
+  transition:
+    transform var(--dur-ui) var(--ease-out),
+    opacity var(--dur-ui) var(--ease-out);
+}
+
+/* Italia: 4 categorie → spicchi colorati */
+.map-pin--multi::before {
+  background: conic-gradient(
+    var(--cat-site) 0 25%,
+    var(--cat-lab) 25% 50%,
+    var(--cat-biotech) 50% 75%,
+    var(--cat-production) 75% 100%
+  );
+}
+
+/* Con un filtro attivo l'Italia prende il colore di quella categoria */
+.map-pin--multi[data-show="site"]::before       { background: var(--cat-site); }
+.map-pin--multi[data-show="lab"]::before        { background: var(--cat-lab); }
+.map-pin--multi[data-show="biotech"]::before    { background: var(--cat-biotech); }
+.map-pin--multi[data-show="production"]::before { background: var(--cat-production); }
+
+/* Onda che pulsa piano (si ferma con Stop animation / reduced-motion) */
+.map-pin::after {
+  content: "";
+  position: absolute;
+  left: -10px;
+  top: -10px;
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  border: 2px solid var(--cat, var(--ocean));
+  animation: pin-pulse 2.6s var(--ease-out) infinite;
+  pointer-events: none;
+}
+
+@keyframes pin-pulse {
+  from { transform: scale(1); opacity: 0.7; }
+  to   { transform: scale(2.6); opacity: 0; }
+}
+
+.motion-paused .map-pin::after {
+  animation: none;
+  opacity: 0;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .map-pin::after {
+    animation: none;
+    opacity: 0;
+  }
+}
+
+/* Area cliccabile più grande del punto (solo mouse: per tastiera c'è l'elenco) */
+.map-pin-hit {
+  position: absolute;
+  left: -20px;
+  top: -20px;
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  cursor: pointer;
+}
+
+/* Nome: compare al passaggio del mouse */
+.map-pin-label {
+  position: absolute;
+  left: 50%;
+  bottom: 18px;
+  padding: 0.35rem 0.75rem;
+  border-radius: 999px;
+  background-color: var(--hard-grey);
+  color: var(--ricepaper);
+  font-size: var(--fs-label);
+  font-weight: 600;
+  white-space: nowrap;
+  opacity: 0;
+  transform: translate(-50%, 4px);
+  transition:
+    opacity var(--dur-ui) var(--ease-out),
+    transform var(--dur-ui) var(--ease-out);
+  pointer-events: none;
+}
+
+.map-pin.is-active::before {
+  transform: scale(1.3);
+}
+
+.map-pin.is-active .map-pin-label {
+  opacity: 1;
+  transform: translate(-50%, 0);
+}
+
+/* Filtro attivo: i punti che non c'entrano si spengono */
+.map-pin.is-off {
+  pointer-events: none;
+}
+
+.map-pin.is-off::before {
+  opacity: 0.15;
+}
+
+.map-pin.is-off::after,
+.map-pin.is-off .map-pin-label {
+  display: none;
+}
+
+/* --------------------------------------------------------------------------
+   Scheda della sede (sopra la mappa, in basso a sinistra)
+   -------------------------------------------------------------------------- */
+
+.site-card {
+  position: absolute;
+  left: 0;
+  bottom: 0;
+  z-index: 2;
+  width: min(380px, 42%);
+  padding: 1.5rem 1.5rem 1.5rem;
+  border-radius: var(--r-card);
+  background-color: var(--hard-grey);
+  color: var(--ricepaper);
+  box-shadow: 0 12px 40px rgba(25, 25, 25, 0.25);
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .site-card:not([hidden]) {
+    animation: card-in 0.45s var(--ease-out);
+  }
+}
+
+@keyframes card-in {
+  from { opacity: 0; transform: translate3d(0, 12px, 0); }
+  to   { opacity: 1; transform: none; }
+}
+
+.site-card-close {
+  position: absolute;
+  top: 0.5rem;
+  right: 0.5rem;
+  display: grid;
+  place-items: center;
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  color: var(--ricepaper);
+  transition: background-color var(--dur-ui) var(--ease-out);
+}
+
+.site-card-close:hover {
+  background-color: rgba(247, 243, 235, 0.12);
+}
+
+.site-card-close svg {
+  width: 18px;
+  height: 18px;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 1.75;
+}
+
+.site-card :focus-visible {
+  outline-color: var(--ocean-on-dark);
+}
+
+.site-card-type {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding-right: 2.5rem;
+  font-size: var(--fs-small);
+  font-weight: 600;
+  letter-spacing: 0.01em;
+  color: var(--muted-on-dark);
+}
+
+/* Sul fondo scuro il puntino ha un bordo chiaro */
+.site-card-type .cat-dot {
+  box-shadow: 0 0 0 2px var(--ricepaper);
+}
+
+.site-card-title {
+  margin-top: 0.75rem;
+  font-family: var(--font-display);
+  font-size: clamp(1.4rem, 1.1rem + 0.8vw, 1.875rem);
+  font-weight: 500;
+  line-height: 1.1;
+  letter-spacing: -0.03em;
+}
+
+.site-card-title:focus {
+  outline: none;
+}
+
+.site-card-desc {
+  margin-top: 0.75rem;
+  font-size: var(--fs-small);
+  line-height: 1.6;
+  color: var(--ricepaper);
+}
+
+.site-card-desc:empty,
+.site-card-list:empty {
+  display: none;
+}
+
+/* Scheda Italia: elenco delle sedi italiane */
+.site-card-list {
+  margin-top: 0.75rem;
+}
+
+.site-card-list button {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  width: 100%;
+  min-height: 44px;
+  border-bottom: 1px solid var(--line-on-dark);
+  font-size: var(--fs-small);
+  text-align: left;
+  color: var(--ricepaper);
+}
+
+.site-card-list button:hover {
+  color: var(--ocean-on-dark);
+}
+
+.site-card-list .cat-dot {
+  box-shadow: 0 0 0 2px var(--ricepaper);
+}
+
+/* --------------------------------------------------------------------------
+   Elenco delle sedi (5 colonne, una per categoria)
+   -------------------------------------------------------------------------- */
+
+.presence-list {
+  display: grid;
+  grid-template-columns: repeat(5, minmax(0, 1fr));
+  gap: clamp(1.5rem, 1rem + 1.5vw, 2.5rem);
+  margin-top: clamp(1.5rem, 1rem + 2vw, 3rem);
+}
+
+.presence-group h3 {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding-bottom: 0.75rem;
+  border-bottom: 1px solid var(--hard-grey);
+  font-size: var(--fs-small);
+  font-weight: 600;
+  letter-spacing: 0.01em;
+  color: var(--hard-grey);
+}
+
+.presence-group li {
+  border-bottom: 1px solid var(--line);
+}
+
+.site-btn {
+  display: block;
+  width: 100%;
+  padding: 0.85rem 0;
+  text-align: left;
+}
+
+.site-name {
+  display: block;
+  font-family: var(--font-display);
+  font-size: clamp(1.05rem, 0.95rem + 0.3vw, 1.25rem);
+  font-weight: 500;
+  letter-spacing: -0.02em;
+  color: var(--hard-grey);
+  transition: color var(--dur-ui) var(--ease-out);
+}
+
+.site-sub {
+  display: block;
+  margin-top: 0.15rem;
+  font-size: var(--fs-small);
+  color: var(--muted);
+}
+
+/* Sede collegata al punto attivo, o con la scheda aperta */
+.site-btn:hover .site-name,
+.site-btn.is-linked .site-name,
+.site-btn[aria-expanded="true"] .site-name {
+  color: var(--ocean);
+}
+
+.site-btn:focus-visible {
+  outline-offset: 2px;
+}
+
+/* --------------------------------------------------------------------------
+   Responsive
+   -------------------------------------------------------------------------- */
+
+@media (max-width: 1023.98px) {
+  .presence-list {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+}
+
+/* Mobile: la scheda va sotto la mappa, a tutta larghezza */
+@media (max-width: 699.98px) {
+  .site-card {
+    position: relative;
+    width: 100%;
+    margin-top: 1rem;
+  }
+
+  .presence-list {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .map-pin::before,
+  .map-pin::after {
+    left: -7px;
+    top: -7px;
+    width: 14px;
+    height: 14px;
+    border-width: 2px;
+  }
+}
+
+/* --------------------------------------------------------------------------
+   Gruppi come tendine (<details>): su desktop sempre aperti, su mobile
+   chiusi all'inizio — la sezione diventa molto più bassa
+   -------------------------------------------------------------------------- */
+
+.presence-group > summary {
+  display: block;
+  list-style: none;
+  cursor: default;
+}
+
+.presence-group > summary::-webkit-details-marker {
+  display: none;
+}
+
+@media (max-width: 699.98px) {
+  /* Filtri su una riga che scorre */
+  .presence-filters {
+    flex-wrap: nowrap;
+    margin-inline: calc(-1 * var(--gutter));
+    padding: 0 var(--gutter) 0.25rem;
+    overflow-x: auto;
+  }
+
+  .filter-pill {
+    flex: none;
+  }
+
+  .presence-list {
+    grid-template-columns: 1fr;
+    gap: 0;
+    margin-top: 1.25rem;
+    border-top: 1px solid var(--hard-grey);
+  }
+
+  .presence-group > summary {
+    cursor: pointer;
+    border-bottom: 1px solid var(--line);
+  }
+
+  .presence-group h3 {
+    position: relative;
+    min-height: 52px;
+    padding: 0 2rem 0 0;
+    border-bottom: 0;
+  }
+
+  /* Freccia della tendina */
+  .presence-group h3::after {
+    content: "";
+    position: absolute;
+    right: 0.35rem;
+    top: 50%;
+    width: 9px;
+    height: 9px;
+    border-right: 1.5px solid currentColor;
+    border-bottom: 1.5px solid currentColor;
+    transform: translateY(-70%) rotate(45deg);
+    transition: transform var(--dur-ui) var(--ease-out);
+  }
+
+  .presence-group[open] h3::after {
+    transform: translateY(-30%) rotate(-135deg);
+  }
+
+  .presence-group > summary:focus-visible {
+    outline-offset: -2px;
+  }
+
+  .presence-group ul {
+    padding-bottom: 0.5rem;
+  }
+
+  .site-btn {
+    padding: 0.6rem 0;
+  }
+
+  .presence-group li:last-child {
+    border-bottom: 0;
+  }
+}
+
+/* --------------------------------------------------------------------------
+   Colori della palette: bordo Hard Grey su pallini e punti (contrasto sul
+   fondo chiaro), alone chiaro per staccarli dai puntini della mappa
+   -------------------------------------------------------------------------- */
+
+.cat-dot {
+  box-shadow: 0 0 0 1.5px var(--hard-grey);
+}
+
+.map-pin::before {
+  border: 2px solid var(--hard-grey);
+  box-shadow: 0 0 0 2px var(--ricepaper), 0 2px 10px rgba(25, 25, 25, 0.25);
+}
+
+.map-pin::after {
+  border-color: var(--hard-grey);
+}
+
+/* Sui fondi scuri (scheda della sede, filtro attivo) il bordo è chiaro */
+.site-card .cat-dot,
+.filter-pill[aria-pressed="true"] .cat-dot {
+  box-shadow: 0 0 0 1.5px var(--ricepaper);
+}
+
+/* Filtro attivo in Ocean pieno, testo Ricepaper (4.69:1) */
+.filter-pill[aria-pressed="true"] {
+  border-color: var(--ocean);
+  background-color: var(--ocean);
+  color: var(--ricepaper);
+}

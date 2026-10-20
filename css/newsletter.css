@@ -1,0 +1,339 @@
+/* ==========================================================================
+   9 · Newsletter (chiaro, compatta) — si stacca dal footer scuro.
+   Sinistra: etichetta, titolo, frase. Destra: modulo a pillole.
+   Texture 1 sotto, vetro chiaro sopra: testi Hard Grey ≥ 6.5:1.
+   ========================================================================== */
+
+/* Texture (texture 1) in un riquadro arrotondato, vetro chiaro sopra */
+.nl-stage {
+  position: relative;
+  isolation: isolate;
+  overflow: hidden;
+  padding: clamp(1rem, 0.5rem + 2vw, 2.5rem);
+  border-radius: var(--r-stage);
+}
+
+.nl-bg {
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+}
+
+.nl-bg img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+/* Vetro chiaro comune (0.50, vedi base.css): anche sopra il punto più scuro
+   il fondo resta ≈ #8E8C88 → testo Hard Grey ≥ 5.4:1. Per questo qui niente grigio secondario e
+   contorni di focus in Hard Grey (l'azzurro sul vetro non si vedrebbe). */
+.nl-glass {
+  padding: clamp(1.5rem, 1rem + 2vw, 3rem);
+  border-radius: var(--r-card);
+  background-color: var(--glass-light-bg);
+  background-image: var(--glass-light-sheen);
+  -webkit-backdrop-filter: var(--glass-blur);
+  backdrop-filter: var(--glass-blur);
+  box-shadow: var(--glass-light-line);
+}
+
+@supports not ((backdrop-filter: blur(1px)) or (-webkit-backdrop-filter: blur(1px))) {
+  .nl-glass {
+    background-color: rgba(247, 243, 235, 0.85);
+  }
+}
+
+.newsletter :focus-visible,
+.newsletter .nl-pill input:focus-visible + span,
+.newsletter .nl-consent input:focus-visible + .nl-box {
+  outline-color: var(--hard-grey);
+}
+
+.nl-wrap {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+  align-items: start;
+  gap: clamp(1.5rem, 1rem + 4vw, 6rem);
+}
+
+.nl-title {
+  font-family: var(--font-display);
+  font-size: var(--fs-section);
+  font-weight: 500;
+  line-height: 1.05;
+  letter-spacing: -0.04em;
+  color: var(--hard-grey);
+}
+
+.nl-title span:not(.eyebrow) {
+  display: block;
+  margin-top: 1rem;
+}
+
+.nl-intro {
+  margin-top: 0.85rem;
+  font-size: var(--fs-body);
+  color: var(--hard-grey);
+}
+
+/* --------------------------------------------------------------------------
+   Modulo
+   -------------------------------------------------------------------------- */
+
+.nl-label,
+.nl-legend {
+  display: block;
+  margin-bottom: 0.6rem;
+  font-size: var(--fs-small);
+  font-weight: 600;
+  color: var(--hard-grey);
+}
+
+/* Interessi: pillole-checkbox (il checkbox vero resta, solo nascosto alla vista) */
+.nl-fieldset {
+  margin-top: 1.25rem;
+  border: 0;
+}
+
+.nl-options {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+
+/* Il checkbox vero resta dentro la sua pillola (niente salti col Tab) */
+.nl-pill,
+.nl-consent {
+  min-height: 44px;   /* area di tocco ≥ 44px anche su una riga */
+  position: relative;
+}
+
+.nl-pill input,
+.nl-consent input {
+  position: absolute;
+  top: 50%;
+  left: 1rem;
+  opacity: 0;
+  width: 1px;
+  height: 1px;
+}
+
+.nl-pill span {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  min-height: 44px;
+  padding: 0 1.1rem;
+  border: 1px solid var(--hard-grey);
+  border-radius: 999px;
+  font-size: var(--fs-small);
+  font-weight: 600;
+  color: var(--hard-grey);
+  cursor: pointer;
+  transition:
+    background-color var(--dur-ui) var(--ease-out),
+    color var(--dur-ui) var(--ease-out);
+}
+
+/* Spunta visibile quando è selezionata (non solo il colore) */
+.nl-pill span::before {
+  content: "";
+  width: 0;
+  height: 10px;
+  border-right: 2px solid currentColor;
+  border-bottom: 2px solid currentColor;
+  transform: rotate(45deg) translateY(-2px);
+  opacity: 0;
+  transition: width var(--dur-ui) var(--ease-out), opacity var(--dur-ui) var(--ease-out);
+}
+
+.nl-pill input:checked + span {
+  background-color: var(--hard-grey);
+  color: var(--ricepaper);
+}
+
+.nl-pill input:checked + span::before {
+  width: 5px;
+  opacity: 1;
+}
+
+.nl-pill input:focus-visible + span,
+.nl-consent input:focus-visible + .nl-box {
+  outline: 2px solid var(--hard-grey);
+  outline-offset: 3px;
+}
+
+/* Consenso privacy: casella quadrata */
+.nl-consent {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.75rem;
+  margin-top: 1.25rem;
+  font-size: var(--fs-small);
+  line-height: 1.5;
+  color: var(--hard-grey);
+  cursor: pointer;
+}
+
+.nl-box {
+  flex: none;
+  display: grid;
+  place-items: center;
+  width: 22px;
+  height: 22px;
+  margin-top: 1px;
+  border: 1.5px solid var(--hard-grey);
+  border-radius: 6px;
+}
+
+.nl-box::after {
+  content: "";
+  width: 5px;
+  height: 10px;
+  border-right: 2px solid var(--ricepaper);
+  border-bottom: 2px solid var(--ricepaper);
+  transform: rotate(45deg) translate(-1px, -1px);
+  opacity: 0;
+}
+
+.nl-consent input:checked + .nl-box {
+  background-color: var(--hard-grey);
+}
+
+.nl-consent input:checked + .nl-box::after {
+  opacity: 1;
+}
+
+.nl-consent a {
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+
+.nl-consent a:hover {
+  text-decoration-thickness: 2px;
+}
+
+/* Errori: icona + testo (mai solo colore), bordo più spesso sul campo */
+.nl-error:not(:empty) {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  margin-top: 0.6rem;
+  font-size: var(--fs-small);
+  font-weight: 600;
+  color: var(--hard-grey);
+}
+
+.nl-error:not(:empty)::before {
+  content: "!";
+  display: grid;
+  place-items: center;
+  flex: none;
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  background-color: var(--hard-grey);
+  color: var(--ricepaper);
+  font-size: 0.75rem;
+  font-weight: 700;
+}
+
+.nl-status:not(:empty) {
+  margin-top: 1rem;
+  font-family: var(--font-display);
+  font-size: clamp(1.25rem, 1rem + 0.8vw, 1.75rem);
+  font-weight: 500;
+  letter-spacing: -0.03em;
+  color: var(--hard-grey);
+}
+
+/* --------------------------------------------------------------------------
+   Responsive
+   -------------------------------------------------------------------------- */
+
+@media (max-width: 899.98px) {
+  .nl-wrap {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* Mobile: riquadro molto più compatto */
+@media (max-width: 699.98px) {
+  .nl-stage {
+    padding: 0.5rem;
+    border-radius: var(--r-card);
+  }
+
+  .nl-glass {
+    padding: 1.25rem 1.1rem;
+    border-radius: var(--r-inner);
+  }
+
+  .nl-wrap {
+    gap: 1.25rem;
+  }
+
+  .nl-title {
+    font-size: 1.6rem;
+  }
+
+  .nl-title span:not(.eyebrow) {
+    margin-top: 0.5rem;
+  }
+
+  .nl-intro {
+    margin-top: 0.4rem;
+    font-size: var(--fs-small);
+  }
+
+  .nl-fieldset,
+  .nl-consent {
+    margin-top: 1rem;
+  }
+
+  .nl-consent {
+    font-size: 0.8125rem;
+  }
+}
+
+/* --------------------------------------------------------------------------
+   Pillole degli interessi più piccole (36px a vista).
+   L'area di tocco resta 44px: è l'etichetta intera, più alta della pillola.
+   Lo spazio della spunta c'è solo quando è selezionata (testo centrato).
+   -------------------------------------------------------------------------- */
+
+.nl-pill {
+  display: inline-flex;
+  align-items: center;
+  min-height: 44px;
+}
+
+.nl-pill span {
+  gap: 0;
+  min-height: 36px;
+  padding: 0 0.95rem;
+  font-size: 0.8125rem;
+}
+
+.nl-pill input:checked + span::before {
+  margin-right: 0.45rem;
+}
+
+/* Un solo contorno di focus, staccato dalla pillola */
+.newsletter .nl-pill input:focus-visible + span {
+  outline: 2px solid var(--hard-grey);
+  outline-offset: 2px;
+}
+
+.nl-options {
+  gap: 0 0.5rem;
+}
+
+/* Interesse scelto in Ocean pieno, testo Ricepaper (4.69:1, non dipende
+   dal vetro: il fondo della pillola è pieno) */
+.nl-pill input:checked + span {
+  border-color: var(--ocean);
+  background-color: var(--ocean);
+  color: var(--ricepaper);
+}

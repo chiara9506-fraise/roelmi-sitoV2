@@ -1,0 +1,911 @@
+/* ==========================================================================
+   Pagina prodotto — modello (oggi: CytoFruit®)
+   Apertura (texture + vetro) · descrizione · key benefits (texture + 4 vetri)
+   · dettagli tecnici a tendina + certificazioni · richiesta · correlati.
+   Usa il sistema comune di base.css; le schede correlate vengono da finder.css.
+   ========================================================================== */
+
+/* Titolo di sezione (stessa misura di tutto il sito) */
+.pd-section-title {
+  font-family: var(--font-display);
+  font-size: var(--fs-section);
+  font-weight: 500;
+  line-height: 1;
+  letter-spacing: -0.045em;
+  color: var(--fg);
+}
+
+.pd-section-title span:not(.eyebrow) {
+  display: block;
+  margin-top: 1rem;
+}
+
+/* Riquadro con texture (apertura e richiesta) */
+.pd-stage {
+  position: relative;
+  isolation: isolate;
+  overflow: hidden;
+  display: grid;
+  align-items: end;
+  min-height: min(76vh, 720px);
+  padding: clamp(0.75rem, 0.5rem + 2vw, 2.5rem);
+  border-radius: var(--r-stage);
+}
+
+.pd-stage--cta {
+  min-height: min(60vh, 560px);
+  align-items: center;
+}
+
+.pd-bg {
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+}
+
+.pd-bg img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.pd-glass {
+  width: min(100%, 720px);
+  padding: clamp(1.25rem, 1rem + 1.5vw, 2.5rem);
+  border-radius: var(--r-card);
+}
+
+/* --------------------------------------------------------------------------
+   1 · Apertura
+   -------------------------------------------------------------------------- */
+
+/* Percorso: Home / Ingredient Finder / prodotto */
+.pd-breadcrumb ol {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0 0.5rem;
+  margin-bottom: 1.25rem;
+  font-size: var(--fs-small);
+}
+
+.pd-breadcrumb li {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.pd-breadcrumb li + li::before {
+  content: "/";
+  color: var(--ricepaper);
+}
+
+.pd-breadcrumb a {
+  display: inline-flex;
+  align-items: center;
+  min-height: 44px;
+  color: var(--ricepaper);
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+
+.pd-breadcrumb a[aria-current="page"] {
+  text-decoration: none;
+  font-weight: 600;
+}
+
+.pd-function {
+  margin-top: 0.75rem;
+  font-family: var(--font-display);
+  font-size: clamp(1.15rem, 1rem + 0.5vw, 1.5rem);
+  font-weight: 500;
+  letter-spacing: -0.02em;
+  color: var(--ricepaper);
+}
+
+.pd-intro {
+  max-width: 56ch;
+  margin-top: 1rem;
+  font-size: var(--fs-body);
+  line-height: 1.6;
+  color: var(--ricepaper);
+}
+
+.pd-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.4rem;
+  margin-top: 1.25rem;
+}
+
+.pd-tags li {
+  padding: 0.3rem 0.8rem;
+  border: 1px solid var(--ricepaper);
+  border-radius: 999px;
+  font-size: var(--fs-label);
+  font-weight: 600;
+  color: var(--ricepaper);
+}
+
+.pd-cta {
+  margin-top: 1.5rem;
+}
+
+/* --------------------------------------------------------------------------
+   2 · Descrizione
+   -------------------------------------------------------------------------- */
+
+.pd-statement {
+  max-width: 34ch;
+  margin-top: var(--title-gap);
+  margin-left: auto;
+  font-family: var(--font-display);
+  font-size: clamp(1.375rem, 1rem + 1.6vw, 2.5rem);
+  font-weight: 500;
+  line-height: 1.2;
+  letter-spacing: -0.03em;
+  color: var(--hard-grey);
+}
+
+/* --------------------------------------------------------------------------
+   3 · Key benefits: texture + titolo e 4 pannelli di vetro
+   -------------------------------------------------------------------------- */
+
+.pd-benefits-stage {
+  position: relative;
+  isolation: isolate;
+  overflow: hidden;
+  display: grid;
+  gap: clamp(0.6rem, 0.4rem + 1vw, 1.25rem);
+  padding: clamp(0.75rem, 0.5rem + 2vw, 2.5rem);
+  border-radius: var(--r-stage);
+}
+
+.pd-benefits-head {
+  justify-self: start;
+  width: fit-content;
+  max-width: 100%;
+  padding: clamp(1.25rem, 1rem + 1.2vw, 2.25rem) clamp(1.5rem, 1rem + 2vw, 3rem);
+  border-radius: var(--r-card);
+  margin-bottom: clamp(4rem, 2rem + 8vw, 12rem);  /* fascia di texture libera */
+}
+
+.pd-benefit-list {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: inherit;
+}
+
+.pd-benefit {
+  padding: clamp(1.1rem, 1rem + 0.6vw, 1.75rem);
+  border-radius: var(--r-card);
+}
+
+.pd-benefit-title {
+  font-family: var(--font-display);
+  font-size: clamp(1.125rem, 1rem + 0.4vw, 1.375rem);
+  font-weight: 500;
+  line-height: 1.15;
+  letter-spacing: -0.025em;
+}
+
+.pd-benefit p {
+  margin-top: 0.75rem;
+  font-size: var(--fs-small);
+  line-height: 1.6;
+}
+
+/* --------------------------------------------------------------------------
+   4 · Dettagli tecnici: tre gruppi a tendina + certificazioni
+   -------------------------------------------------------------------------- */
+
+.pd-tech-layout {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(220px, 300px);
+  align-items: start;
+  gap: clamp(1.5rem, 1rem + 3vw, 4rem);
+  margin-top: var(--title-gap);
+}
+
+.pd-tech-groups {
+  border-top: 1px solid var(--hard-grey);
+}
+
+.pd-group {
+  border-bottom: 1px solid var(--line);
+}
+
+.pd-group > summary {
+  list-style: none;
+  cursor: pointer;
+}
+
+.pd-group > summary::-webkit-details-marker {
+  display: none;
+}
+
+.pd-group-title {
+  position: relative;
+  display: flex;
+  align-items: center;
+  min-height: 64px;
+  padding-right: 2rem;
+  font-family: var(--font-display);
+  font-size: clamp(1.25rem, 1rem + 0.8vw, 1.75rem);
+  font-weight: 500;
+  letter-spacing: -0.03em;
+  color: var(--hard-grey);
+  transition: color var(--dur-ui) var(--ease-out);
+}
+
+.pd-group > summary:hover .pd-group-title {
+  color: var(--ocean);
+}
+
+/* Freccia */
+.pd-group-title::after {
+  content: "";
+  position: absolute;
+  right: 0.4rem;
+  top: 50%;
+  width: 10px;
+  height: 10px;
+  border-right: 1.5px solid currentColor;
+  border-bottom: 1.5px solid currentColor;
+  transform: translateY(-70%) rotate(45deg);
+  transition: transform var(--dur-ui) var(--ease-out);
+}
+
+.pd-group[open] .pd-group-title::after {
+  transform: translateY(-30%) rotate(-135deg);
+}
+
+.pd-group > summary:focus-visible {
+  outline-offset: -2px;
+}
+
+.pd-group-body {
+  padding-bottom: 1.5rem;
+}
+
+.pd-details {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 1.25rem 2rem;
+}
+
+.pd-detail-title {
+  font-size: var(--fs-body);
+  font-weight: 600;
+  line-height: 1.4;
+  color: var(--hard-grey);
+}
+
+.pd-detail p {
+  margin-top: 0.35rem;
+}
+
+/* Testi ancora da fornire: grigi e in corsivo, ben riconoscibili */
+.pd-placeholder {
+  font-size: var(--fs-small);
+  font-style: italic;
+  color: var(--muted);
+}
+
+.pd-specs {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 0 2rem;
+}
+
+.pd-specs div {
+  display: flex;
+  justify-content: space-between;
+  gap: 1rem;
+  padding: 0.75rem 0;
+  border-bottom: 1px solid var(--line);
+}
+
+.pd-specs dt {
+  font-weight: 600;
+  color: var(--hard-grey);
+}
+
+.pd-note {
+  margin-top: 1rem;
+  font-size: var(--fs-small);
+  color: var(--muted);
+}
+
+/* Certificazioni: pillole con la goccia ROELMI */
+.pd-certs {
+  padding: 1.5rem;
+  border: 1px solid var(--line);
+  border-radius: var(--r-card);
+}
+
+.pd-certs-title {
+  font-size: var(--fs-small);
+  font-weight: 600;
+  color: var(--hard-grey);
+}
+
+.pd-certs ul {
+  display: flex;
+  flex-direction: column;
+  gap: 0.6rem;
+  margin-top: 1rem;
+}
+
+.pd-certs li {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  font-family: var(--font-display);
+  font-size: 1.125rem;
+  font-weight: 500;
+  color: var(--hard-grey);
+}
+
+.pd-certs li::before {
+  content: "";
+  flex: none;
+  width: 0.6em;
+  height: 0.9em;
+  background-color: var(--ocean);
+  -webkit-mask: var(--roelmi-drop) center / contain no-repeat;
+  mask: var(--roelmi-drop) center / contain no-repeat;
+}
+
+/* --------------------------------------------------------------------------
+   5 · Richiesta
+   -------------------------------------------------------------------------- */
+
+.pd-contact .pd-section-title {
+  color: var(--ricepaper);
+}
+
+.pd-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+  margin-top: 1.5rem;
+}
+
+/* --------------------------------------------------------------------------
+   6 · Correlati (schede di finder.css)
+   -------------------------------------------------------------------------- */
+
+.pd-related-grid {
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+}
+
+.pd-related-more {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 2rem;
+  border: 1px dashed var(--hard-grey);
+  border-radius: var(--r-card);
+  text-align: center;
+}
+
+.pd-related-more .btn {
+  white-space: normal;
+  line-height: 1.3;
+  padding-block: 0.6rem;
+}
+
+/* --------------------------------------------------------------------------
+   Responsive
+   -------------------------------------------------------------------------- */
+
+@media (max-width: 1023.98px) {
+  .pd-benefit-list {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .pd-tech-layout {
+    grid-template-columns: 1fr;
+  }
+
+  .pd-related-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 699.98px) {
+  .pd-stage {
+    min-height: 0;
+    padding: 0.6rem;
+    padding-top: 30vh;
+    border-radius: var(--r-card);
+  }
+
+  .pd-stage--cta {
+    padding-top: 0.6rem;
+  }
+
+  .pd-glass {
+    padding: 1.1rem;
+    border-radius: var(--r-inner);
+  }
+
+  .pd-benefits-stage {
+    gap: 0.6rem;
+    padding: 0.6rem;
+    border-radius: var(--r-card);
+  }
+
+  .pd-benefits-head {
+    width: auto;
+    justify-self: stretch;
+    padding: 1rem;
+    margin-bottom: 7vh;
+    border-radius: var(--r-inner);
+  }
+
+  .pd-benefit {
+    padding: 1rem;
+    border-radius: var(--r-inner);
+  }
+
+  .pd-details,
+  .pd-specs {
+    grid-template-columns: 1fr;
+  }
+
+  .pd-related-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 479.98px) {
+  .pd-benefit-list {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* ==========================================================================
+   APERTURA "WOW": la goccia ROELMI che si apre
+   Stato di base (CSS) = stato finale: texture intera + velo, nome e scheda
+   visibili. È quello che vede chi non ha JS, chi preme Stop animation o ha
+   "riduci movimento". product-hero.js anima dalla goccia allo stato finale
+   tramite variabili: --drop-h, --drop-x, --drop-y, --drop-o, --full,
+   --name-o, --card-o.
+   Velo 0.65: sopra un punto bianco il fondo resta ≈ #6A6A6A → Ricepaper
+   ≥ 4.9:1 anche per percorso ed etichetta piccoli.
+   ========================================================================== */
+
+.pd-hero {
+  position: relative;
+  background-color: var(--hard-grey);
+  color: var(--ricepaper);
+}
+
+.js .pd-hero.is-animated {
+  height: 260vh;
+}
+
+.pd-hero-stage {
+  position: relative;
+  isolation: isolate;
+  overflow: hidden;
+  min-height: 100vh;
+  min-height: 100svh;
+}
+
+.js .pd-hero.is-animated .pd-hero-stage {
+  position: sticky;
+  top: 0;
+  height: 100vh;
+  height: 100svh;
+}
+
+.pd-hero-media {
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+}
+
+.pd-hero-full,
+.pd-hero-drop,
+.pd-hero-drop img,
+.pd-hero-scrim {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+}
+
+.pd-hero-full,
+.pd-hero-drop img {
+  object-fit: cover;
+}
+
+.pd-hero-full {
+  opacity: var(--full, 1);
+}
+
+.pd-hero-scrim {
+  background-color: rgba(25, 25, 25, 0.65);
+  opacity: var(--full, 1);
+}
+
+/* La goccia: la texture vista attraverso il simbolo del logo */
+.pd-hero-drop {
+  opacity: var(--drop-o, 0);
+  -webkit-mask: var(--roelmi-drop) no-repeat;
+  mask: var(--roelmi-drop) no-repeat;
+  -webkit-mask-size: auto var(--drop-h, 70vh);
+  mask-size: auto var(--drop-h, 70vh);
+  -webkit-mask-position: var(--drop-x, 72%) var(--drop-y, 55%);
+  mask-position: var(--drop-x, 72%) var(--drop-y, 55%);
+}
+
+/* Contenuto: percorso in alto, nome a sinistra, scheda a destra */
+.pd-hero-inner {
+  position: relative;
+  display: grid;
+  grid-template-columns: minmax(0, 1.15fr) minmax(0, 0.85fr);
+  grid-template-rows: auto 1fr;
+  gap: 1.5rem clamp(1.5rem, 1rem + 3vw, 4rem);
+  min-height: 100vh;
+  min-height: 100svh;
+  padding-top: calc(var(--header-h) + 0.5rem);
+  padding-bottom: clamp(1.5rem, 1rem + 2vw, 3rem);
+}
+
+.pd-hero-inner .pd-breadcrumb {
+  grid-column: 1 / -1;
+}
+
+.pd-hero-inner .pd-breadcrumb ol {
+  margin-bottom: 0;
+}
+
+.pd-hero-name {
+  grid-column: 1;
+  grid-row: 2;
+  align-self: end;
+  font-family: var(--font-display);
+  font-weight: 500;
+  color: var(--ricepaper);
+  opacity: var(--name-o, 1);
+}
+
+.pd-hero-word {
+  display: block;
+  margin-top: 1rem;
+  font-size: clamp(3rem, 1.5rem + 7vw, 9.5rem);
+  line-height: 0.95;
+  letter-spacing: -0.055em;
+}
+
+.pd-hero-card {
+  grid-column: 2;
+  grid-row: 2;
+  align-self: end;
+  padding: clamp(1.25rem, 1rem + 1.2vw, 2rem);
+  border-radius: var(--r-card);
+  opacity: var(--card-o, 1);
+  transform: translate3d(0, calc((1 - var(--card-o, 1)) * 24px), 0);
+}
+
+.pd-hero-card .pd-function {
+  margin-top: 0;
+}
+
+/* Scheda ancora invisibile durante l'animazione: niente clic per sbaglio */
+.pd-hero.is-card-hidden .pd-hero-card {
+  pointer-events: none;
+}
+
+/* Mobile: nome e scheda uno sotto l'altro, goccia centrata in alto */
+@media (max-width: 899.98px) {
+  .pd-hero-inner {
+    grid-template-columns: 1fr;
+    grid-template-rows: auto 1fr auto;
+  }
+
+  .pd-hero-name {
+    grid-row: 2;
+  }
+
+  .pd-hero-card {
+    grid-column: 1;
+    grid-row: 3;
+  }
+}
+
+/* ==========================================================================
+   APERTURA B "il nome fatto di materia" (.pd-hero--word)
+   Il nome enorme è riempito dalla texture (background-clip: text); scorrendo
+   la texture si muove e si avvicina dentro le lettere (--word-y, --word-size).
+   Contorno chiaro sottile: il nome resta leggibile anche dove la texture è
+   scura. Senza supporto per il testo-immagine: nome in Ricepaper pieno.
+   Per tornare alla A: heroVariant: 'drop' nel generatore.
+   ========================================================================== */
+
+/* Nella variante A l'immagine sul nome non deve vedersi */
+.pd-hero:not(.pd-hero--word) .pd-hero-word {
+  background-image: none !important;
+}
+
+.pd-hero--word .pd-hero-media {
+  display: none;
+}
+
+.js .pd-hero--word.is-animated {
+  height: 180vh;
+}
+
+.pd-hero--word .pd-hero-inner {
+  grid-template-columns: minmax(0, 1fr) minmax(0, 520px);
+  grid-template-rows: auto 1fr auto;
+}
+
+.pd-hero--word .pd-hero-name {
+  grid-column: 1 / -1;
+  grid-row: 2;
+  align-self: center;
+  opacity: 1;
+}
+
+.pd-hero--word .pd-hero-word {
+  margin-top: 0.75rem;
+  font-size: clamp(3.5rem, 15.5vw, 17rem);
+  line-height: 0.88;
+  letter-spacing: -0.06em;
+  color: var(--ricepaper);
+}
+
+@supports ((-webkit-background-clip: text) or (background-clip: text)) {
+  .pd-hero--word .pd-hero-word {
+    background-size: var(--word-size, 140%) auto;
+    background-position: 50% var(--word-y, 45%);
+    background-repeat: no-repeat;
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+    -webkit-text-fill-color: transparent;
+    -webkit-text-stroke: 1px rgba(247, 243, 235, 0.55);
+  }
+}
+
+/* Scheda: sotto il nome, a destra, visibile da subito */
+.pd-hero--word .pd-hero-card {
+  grid-column: 2;
+  grid-row: 3;
+  opacity: 1;
+  transform: none;
+}
+
+@media (max-width: 899.98px) {
+  .pd-hero--word .pd-hero-inner {
+    grid-template-columns: 1fr;
+  }
+
+  .pd-hero--word .pd-hero-card {
+    grid-column: 1;
+  }
+}
+
+/* --------------------------------------------------------------------------
+   B · equilibrio dello stato finale
+   - la sezione scorre normalmente (niente scena ferma): nulla viene tagliato
+   - nome un po' più piccolo, ® piccolo in apice
+   - sotto il nome due colonne su una linea sottile: a sinistra funzione e
+     descrizione, a destra certificazioni e "Request datasheet"
+   -------------------------------------------------------------------------- */
+
+.js .pd-hero--word.is-animated {
+  height: auto;
+}
+
+.js .pd-hero--word.is-animated .pd-hero-stage {
+  position: relative;
+  height: auto;
+}
+
+.pd-hero--word .pd-hero-inner {
+  grid-template-columns: minmax(0, 1fr);
+  grid-template-rows: auto 1fr auto;
+  row-gap: clamp(1.5rem, 1rem + 2vw, 3rem);
+}
+
+.pd-hero--word .pd-hero-word {
+  font-size: clamp(3.25rem, 1rem + 12vw, 14rem);
+}
+
+.pd-reg {
+  position: relative;
+  top: -0.05em;
+  margin-left: 0.04em;
+  font-size: 0.3em;
+  line-height: 0;
+  letter-spacing: 0;
+  vertical-align: top;
+}
+
+/* Niente vetro su fondo scuro: due colonne aperte */
+.pd-hero--word .pd-hero-card {
+  grid-column: 1;
+  grid-row: 3;
+  display: grid;
+  grid-template-columns: minmax(0, 1.25fr) minmax(0, 0.75fr);
+  grid-template-areas:
+    "fn   tags"
+    "text cta";
+  align-items: start;
+  gap: 1rem clamp(1.5rem, 1rem + 4vw, 6rem);
+  padding: clamp(1.25rem, 1rem + 1vw, 2rem) 0 0;
+  border-top: 1px solid var(--line-on-dark);
+  border-radius: 0;
+  background: none;
+  -webkit-backdrop-filter: none;
+  backdrop-filter: none;
+  box-shadow: none;
+}
+
+.pd-hero--word .pd-function { grid-area: fn; }
+.pd-hero--word .pd-intro    { grid-area: text; margin-top: 0; }
+
+.pd-hero--word .pd-tags {
+  grid-area: tags;
+  justify-self: end;
+  margin-top: 0;
+}
+
+.pd-hero--word .pd-cta {
+  grid-area: cta;
+  justify-self: end;
+  align-self: end;
+  margin-top: 0;
+}
+
+@media (max-width: 699.98px) {
+  .pd-hero--word .pd-hero-card {
+    grid-template-columns: 1fr;
+    grid-template-areas: "fn" "text" "tags" "cta";
+  }
+
+  .pd-hero--word .pd-tags,
+  .pd-hero--word .pd-cta {
+    justify-self: start;
+  }
+}
+
+/* --------------------------------------------------------------------------
+   A · equilibrio dello stato finale
+   Desktop: nome e scheda sulla stessa linea di base, scheda più stretta e
+   allineata a destra. Mobile: tutto entra nello schermo (la scena è ferma
+   durante lo scroll): nome più piccolo, descrizione fermata a 3 righe
+   solo a vista (lo screen reader la legge intera).
+   -------------------------------------------------------------------------- */
+
+.pd-hero--drop .pd-hero-inner {
+  grid-template-columns: minmax(0, 1fr) minmax(0, 30rem);
+  align-items: end;
+}
+
+.pd-hero--drop .pd-hero-card {
+  justify-self: end;
+  width: 100%;
+}
+
+.pd-hero--drop .pd-intro {
+  font-size: var(--fs-small);
+}
+
+@media (max-width: 899.98px) {
+  .pd-hero--drop .pd-hero-inner {
+    grid-template-columns: 1fr;
+    row-gap: 1rem;
+    padding-bottom: 1rem;
+  }
+
+  .pd-hero--drop .pd-hero-word {
+    margin-top: 0.5rem;
+    font-size: clamp(2.75rem, 1rem + 9vw, 4.5rem);
+  }
+
+  .pd-hero--drop .pd-hero-card {
+    justify-self: stretch;
+    padding: 1.1rem;
+    border-radius: var(--r-inner);
+  }
+
+  .pd-hero--drop .pd-intro {
+    display: -webkit-box;
+    -webkit-line-clamp: 3;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+    margin-top: 0.5rem;
+  }
+
+  .pd-hero--drop .pd-tags {
+    margin-top: 0.85rem;
+  }
+
+  .pd-hero--drop .pd-cta {
+    margin-top: 1rem;
+  }
+}
+
+/* A · all'inizio il nome sta all'altezza del centro della goccia: entrambi
+   centrati nello spazio libero sotto il percorso (--name-top, da product-hero.js) (solo con l'animazione attiva e da tablet
+   in su; il nome sfuma prima che arrivi la scheda) */
+@media (min-width: 900px) {
+  .pd-hero--drop.is-animated .pd-hero-name {
+    position: absolute;
+    /* Fuori dalla cella della griglia: top e left si misurano dall'inizio
+       della scena (dentro la cella si sommavano due volte) */
+    grid-row: auto;
+    grid-column: auto;
+    top: var(--name-top, 50%);
+    left: var(--gutter);
+    right: 45%;
+  }
+}
+
+/* Descrizione: parole chiave in Ocean, come il paragrafo di Who We Are
+   (Ocean su Ricepaper 4.69:1, testo grande) */
+.pd-statement strong {
+  font-weight: 500;
+}
+
+.pd-statement .accent {
+  color: var(--ocean);
+}
+
+/* ==========================================================================
+   Key benefits: accenti della palette
+   Da fermi: vetro scuro + goccia ROELMI colorata in cima (decorativa).
+   Hover: il pannello si riempie del suo colore, testo Hard Grey
+   (Cerulean 8.9 · Antique 10.4 · Olive 9.2:1). Ordine fisso per tutte le
+   pagine prodotto. Su touch resta il vetro con la goccia.
+   ========================================================================== */
+
+.pd-benefit { --pd-accent: var(--cerulean); }
+.pd-benefit:nth-child(4n + 2) { --pd-accent: var(--antique); }
+.pd-benefit:nth-child(4n + 3) { --pd-accent: var(--olive); }
+
+.pd-benefit::before {
+  content: "";
+  display: block;
+  width: 0.85rem;
+  height: 1.25rem;
+  margin-bottom: 1rem;
+  background-color: var(--pd-accent);
+  -webkit-mask: var(--roelmi-drop) center / contain no-repeat;
+  mask: var(--roelmi-drop) center / contain no-repeat;
+  transition: background-color var(--dur-ui) var(--ease-out);
+}
+
+.pd-benefit {
+  transition:
+    background-color 0.45s var(--ease-out),
+    color 0.45s var(--ease-out);
+}
+
+@media (hover: hover) {
+  .pd-benefit:hover {
+    color: var(--hard-grey);
+    background-color: var(--pd-accent);
+    background-image: none;
+    box-shadow: none;
+  }
+
+  .pd-benefit:hover::before {
+    background-color: var(--hard-grey);
+  }
+}
+
+@media (max-width: 699.98px) {
+  .pd-benefit::before {
+    width: 0.7rem;
+    height: 1rem;
+    margin-bottom: 0.6rem;
+  }
+}

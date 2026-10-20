@@ -1,0 +1,572 @@
+/* ==========================================================================
+   Base — token, tipografia, layout comune, entrate (reveal)
+   ========================================================================== */
+
+:root {
+  /* Palette ROELMI — solo questi colori (vedi CLAUDE.md per i contrasti) */
+  --ricepaper: #F7F3EB;
+  --hard-grey: #191919;
+  --ocean: #42709E;            /* accento su fondo chiaro: 4.69:1 */
+  --ocean-on-dark: #A1BBD8;    /* accento su fondo scuro = Cerulean della palette: 8.89:1 */
+  --muted: #5C5A55;            /* testo secondario su chiaro: 6.2:1 */
+  --muted-on-dark: #A8A49B;
+
+  /* Accenti della palette ROELMI: chiari, quindi si usano come FONDI con
+     testo Hard Grey (8.9–10.4:1) o come colore sui fondi scuri.
+     Mai come testo o linee su fondo chiaro (1.5–1.8:1). */
+  --cerulean: #A1BBD8;   /* Hard Grey sopra 8.89:1 */
+  --antique: #E9BEAF;    /* Hard Grey sopra 10.42:1 */
+  --olive: #B4C09D;      /* Hard Grey sopra 9.18:1 */    /* testo secondario su scuro: 7.1:1 */
+
+  /* Linee decorative (non testo) */
+  --line: rgba(25, 25, 25, 0.16);
+  --line-on-dark: rgba(247, 243, 235, 0.18);
+
+  /* Goccia del logo ROELMI (con le foglie), usata come maschera */
+  --roelmi-drop: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='218.8 0 36.3 54'><path fill-rule='evenodd' d='M219.592 39.0469L219.592 39.0469C219.413 39.1744 219.246 39.3085 219.08 39.4447C220.325 46.6456 225.814 52.3868 232.882 54C235.897 50.6007 236.325 45.4714 233.62 41.5769C230.452 37.0142 224.192 35.8746 219.625 39.0252C226.547 34.242 236.04 35.9632 240.844 42.8765C243.029 46.025 243.863 49.7033 243.478 53.2345C245.208 52.5598 246.808 51.6321 248.236 50.4947C247.749 48.1096 246.783 45.785 245.308 43.6636C239.666 35.5437 228.681 33.3381 220.377 38.5041C231.189 31.5173 245.148 32.9142 254.362 41.2806C254.809 39.7086 255.052 38.05 255.052 36.3373C255.052 34.3717 254.729 32.4861 254.148 30.7129C250.818 18.3914 236.928 0 236.928 0C236.928 0 223.039 18.3914 219.709 30.7129C219.134 32.4861 218.809 34.3717 218.809 36.3373C218.809 37.3883 218.905 38.4219 219.075 39.4253C219.246 39.2955 219.415 39.1701 219.592 39.0469'/></svg>");
+
+  /* Font */
+  --font-display: "Montserrat", "Helvetica Neue", Arial, sans-serif;
+  --font-body: "Open Sans", "Helvetica Neue", Arial, sans-serif;
+
+  /* Scala tipografica (fluida) */
+  --fs-label: 0.75rem;                              /* 12px */
+  --fs-small: 0.875rem;                             /* 14px */
+  --fs-body: 1rem;                                  /* 16px */
+  --fs-lead: clamp(1.0625rem, 0.95rem + 0.45vw, 1.3125rem);
+  --fs-h3: clamp(1.5rem, 1.1rem + 1.4vw, 2.25rem);
+  --fs-h2: clamp(2.5rem, 1.4rem + 4.6vw, 6.5rem);
+  --fs-display: clamp(3.25rem, 1.6rem + 7.2vw, 9.5rem);
+  /* Titolo di sezione: una sola misura per tutte (NIP® resta più grande) */
+  --fs-section: clamp(2rem, 1.2rem + 2.8vw, 4rem);
+
+  /* Angoli: tre misure fisse */
+  --r-stage: 28px;   /* grandi riquadri (NIP, Newsletter) */
+  --r-card: 20px;    /* schede e immagini */
+  --r-inner: 14px;   /* elementi piccoli dentro le schede */
+
+  /* Vetro: due versioni sole, contrasto verificato sul caso peggiore */
+  --glass-blur: blur(24px) saturate(1.6);
+  /* Scuro 0.68: anche sopra il bianco il fondo resta ≈ #6B6B6B → Ricepaper ≥ 4.5:1 */
+  --glass-dark-bg: rgba(25, 25, 25, 0.68);
+  --glass-dark-sheen: linear-gradient(135deg, rgba(247, 243, 235, 0.06) 0%, rgba(247, 243, 235, 0) 45%, rgba(0, 0, 0, 0.1) 100%);
+  --glass-dark-line: inset 0 0 0 1px rgba(247, 243, 235, 0.16);
+  /* Chiaro 0.50: anche sopra il nero il fondo resta ≈ #8E8C88 → Hard Grey ≥ 5.4:1 */
+  --glass-light-bg: rgba(247, 243, 235, 0.5);
+  --glass-light-sheen: linear-gradient(135deg, rgba(255, 255, 255, 0.35) 0%, rgba(255, 255, 255, 0.06) 55%, rgba(255, 255, 255, 0.12) 100%);
+  --glass-light-line: inset 0 0 0 1px rgba(255, 255, 255, 0.45), inset 0 1px 0 rgba(255, 255, 255, 0.55);
+
+  /* Spazi */
+  --gutter: clamp(1.25rem, 0.6rem + 2.8vw, 3.5rem);
+  --section-y: clamp(2.5rem, 1.5rem + 3vw, 4.5rem);   /* spazio tra le sezioni e tra due blocchi di una sezione */
+  --title-gap: clamp(1.75rem, 1rem + 2vw, 3rem);      /* spazio titolo → contenuto, uguale ovunque */
+  --max-width: 1600px;
+  --header-top: 16px;
+  --pill-h: 56px;
+  --header-h: calc(var(--header-top) + var(--pill-h) + 16px);
+
+  /* Movimento */
+  --ease-out: cubic-bezier(0.16, 1, 0.3, 1);
+  --ease-in-out: cubic-bezier(0.65, 0, 0.35, 1);
+  --dur-reveal: 1.2s;
+  --dur-ui: 0.35s;
+
+  /* Colori del tema corrente (di default: chiaro) */
+  --bg: var(--ricepaper);
+  --fg: var(--hard-grey);
+  --fg-muted: var(--muted);
+  --accent: var(--ocean);
+  --rule: var(--line);
+}
+
+/* Temi di sezione: fondi alternati Ricepaper / Hard Grey */
+.theme-light {
+  --bg: var(--ricepaper);
+  --fg: var(--hard-grey);
+  --fg-muted: var(--muted);
+  --accent: var(--ocean);
+  --rule: var(--line);
+}
+
+.theme-dark {
+  --bg: var(--hard-grey);
+  --fg: var(--ricepaper);
+  --fg-muted: var(--muted-on-dark);
+  --accent: var(--ocean-on-dark);
+  --rule: var(--line-on-dark);
+}
+
+/* Sezioni a fondo d'accento (richiesta: usare di più la palette).
+   Fondo chiaro colorato → tutto in Hard Grey (8.9–10.4:1): niente grigio
+   secondario né Ocean, che lì non passano. */
+.theme-olive,
+.theme-cerulean,
+.theme-antique {
+  --fg: var(--hard-grey);
+  --fg-muted: var(--hard-grey);
+  --accent: var(--hard-grey);
+  --rule: rgba(25, 25, 25, 0.22);
+}
+
+.theme-olive    { --bg: var(--olive); }
+.theme-cerulean { --bg: var(--cerulean); }
+.theme-antique  { --bg: var(--antique); }
+
+.theme-light,
+.theme-dark,
+.theme-olive,
+.theme-cerulean,
+.theme-antique {
+  background-color: var(--bg);
+  color: var(--fg);
+}
+
+html {
+  scroll-behavior: smooth;
+  scroll-padding-top: var(--header-h);
+}
+
+body {
+  background-color: var(--ricepaper);
+  color: var(--hard-grey);
+  font-family: var(--font-body);
+  font-size: var(--fs-body);
+  font-weight: 400;
+  line-height: 1.6;
+}
+
+/* --------------------------------------------------------------------------
+   Layout
+   -------------------------------------------------------------------------- */
+
+.container {
+  width: 100%;
+  max-width: var(--max-width);
+  margin-inline: auto;
+  padding-inline: var(--gutter);
+}
+
+.section {
+  position: relative;
+  padding-block: var(--section-y);
+}
+
+/* Grana leggerissima, come la carta di Until. Statica (nessun movimento).
+   Scurisce il fondo di pochi punti: i contrasti restano nei minimi. */
+.grain {
+  position: relative;
+  isolation: isolate;
+}
+
+.grain::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='200' height='200'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='2' stitchTiles='stitch'/><feColorMatrix values='0 0 0 0 0  0 0 0 0 0  0 0 0 0 0  0 0 0 0.6 0'/></filter><rect width='100%' height='100%' filter='url(%23n)'/></svg>");
+  opacity: 0.08;
+  pointer-events: none;
+}
+
+/* --------------------------------------------------------------------------
+   Tipografia comune: etichetta piccola + titolo molto grande
+   -------------------------------------------------------------------------- */
+
+/* Etichetta di sezione: niente maiuscolo spaziato (troppo "di serie"),
+   Montserrat con le maiuscole originali e una piccola goccia ROELMI */
+.eyebrow {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.55em;
+  font-family: var(--font-display);
+  font-size: clamp(0.9375rem, 0.88rem + 0.2vw, 1.0625rem);
+  font-weight: 500;
+  letter-spacing: -0.01em;
+  line-height: 1.3;
+  color: var(--fg);
+}
+
+/* Goccia del logo ROELMI (decorativa) nel colore d'accento della sezione */
+.eyebrow::before {
+  content: "";
+  flex: none;
+  width: 0.7em;
+  height: 1.05em;
+  background-color: var(--accent);
+  -webkit-mask: var(--roelmi-drop) center / contain no-repeat;
+  mask: var(--roelmi-drop) center / contain no-repeat;
+}
+
+.display,
+.h2 {
+  font-family: var(--font-display);
+  font-weight: 400;
+  color: var(--fg);
+}
+
+.display {
+  font-size: var(--fs-display);
+  line-height: 0.98;
+  letter-spacing: -0.045em;
+}
+
+.h2 {
+  font-size: var(--fs-h2);
+  line-height: 1;
+  letter-spacing: -0.04em;
+}
+
+.lead {
+  font-size: var(--fs-lead);
+  font-weight: 300;
+  line-height: 1.55;
+  color: var(--fg);
+}
+
+.text-muted {
+  color: var(--fg-muted);
+}
+
+.accent {
+  color: var(--accent);
+}
+
+/* Cue tra parentesi, stile Until: [ Scroll down ↓ ] */
+.bracket {
+  font-family: var(--font-body);
+  font-size: var(--fs-label);
+  font-weight: 600;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  white-space: nowrap;
+}
+
+/* --------------------------------------------------------------------------
+   Bottoni e link
+   -------------------------------------------------------------------------- */
+
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.6em;
+  min-height: 44px;
+  padding: 0 1.4rem;
+  border: 1px solid currentColor;
+  border-radius: 999px;
+  font-family: var(--font-body);
+  font-size: var(--fs-small);
+  font-weight: 600;
+  letter-spacing: 0.02em;
+  line-height: 1;
+  white-space: nowrap;
+  transition:
+    background-color var(--dur-ui) var(--ease-out),
+    color var(--dur-ui) var(--ease-out),
+    border-color var(--dur-ui) var(--ease-out);
+}
+
+/* CTA piena: accento già da ferma (richiesta di usare più gli accenti).
+   Su chiaro Ocean + testo Ricepaper (4.69:1); su scuro Cerulean + testo
+   Hard Grey (8.9:1). In hover torna al colore del testo della sezione. */
+.btn--solid {
+  background-color: var(--accent);
+  border-color: var(--accent);
+  color: var(--bg);
+}
+
+.btn--solid:hover {
+  background-color: var(--fg);
+  border-color: var(--fg);
+  color: var(--bg);
+}
+
+/* Contorno: in hover si riempie (passa il contrasto anche sopra il vetro) */
+.btn--outline {
+  border-color: var(--fg);
+  color: var(--fg);
+}
+
+.btn--outline:hover {
+  background-color: var(--fg);
+  color: var(--bg);
+}
+
+/* --------------------------------------------------------------------------
+   Etichetta del mercato: un colore della palette per mercato, sempre con il
+   nome scritto. Personal Care = Antique (10.4:1) · Nutraceutical = Olive (9.2:1)
+   -------------------------------------------------------------------------- */
+
+.market-pill {
+  display: inline-flex;
+  align-items: center;
+  min-height: 24px;
+  padding: 0 0.7rem;
+  border-radius: 999px;
+  background-color: var(--antique);
+  color: var(--hard-grey);
+  font-family: var(--font-body);
+  font-size: var(--fs-label);
+  font-weight: 600;
+  line-height: 1.2;
+  letter-spacing: 0;
+  white-space: nowrap;
+}
+
+.market-pill--nutra {
+  background-color: var(--olive);
+}
+
+.market-pills {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.35rem;
+}
+
+/* --------------------------------------------------------------------------
+   Campo a pillola con bottone dentro (ricerca Ingredient Finder, newsletter)
+   Usa i colori del tema della sezione (--fg / --bg / --fg-muted)
+   -------------------------------------------------------------------------- */
+
+.pill-field {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.375rem 0.375rem 0.375rem 1.375rem;
+  border: 1px solid var(--fg);
+  border-radius: 999px;
+}
+
+.pill-field:focus-within {
+  outline: 2px solid var(--fg);
+  outline-offset: 3px;
+}
+
+.pill-field.is-invalid {
+  border-width: 2px;
+}
+
+.pill-input {
+  flex: 1;
+  min-width: 0;
+  min-height: 44px;
+  border: 0;
+  background: transparent;
+  font-size: var(--fs-body);
+  color: var(--fg);
+}
+
+.pill-input::placeholder {
+  color: var(--fg-muted);
+  opacity: 1;
+}
+
+.pill-input:focus-visible {
+  outline: none;
+}
+
+.pill-submit {
+  flex: none;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5em;
+  min-height: 44px;
+  padding: 0 1.4rem;
+  border-radius: 999px;
+  background-color: var(--accent);
+  color: var(--bg);
+  font-size: var(--fs-small);
+  font-weight: 600;
+  white-space: nowrap;
+  transition: background-color var(--dur-ui) var(--ease-out), color var(--dur-ui) var(--ease-out);
+}
+
+.pill-submit:hover {
+  background-color: var(--fg);
+  color: var(--bg);
+}
+
+.pill-submit:focus-visible {
+  outline-color: var(--fg);
+}
+
+.pill-submit svg {
+  width: 14px;
+  height: 14px;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 2;
+}
+
+/* Schermi stretti: bottone sotto il campo, a tutta larghezza */
+@media (max-width: 479.98px) {
+  .pill-field {
+    flex-direction: column;
+    align-items: stretch;
+    padding: 0;
+    border: 0;
+  }
+
+  .pill-field:focus-within {
+    outline: none;
+  }
+
+  .pill-input {
+    padding: 0 1.25rem;
+    border: 1px solid var(--fg);
+    border-radius: 999px;
+  }
+
+  .pill-input:focus-visible {
+    outline: 2px solid var(--fg);
+    outline-offset: 3px;
+  }
+
+  .pill-field.is-invalid .pill-input {
+    border-width: 2px;
+  }
+
+  .pill-submit {
+    justify-content: center;
+  }
+}
+
+/* --------------------------------------------------------------------------
+   Vetro scuro (.glass) — comune a tutte le pagine
+   -------------------------------------------------------------------------- */
+
+.glass {
+  position: relative;
+  border-radius: var(--r-card);
+  padding: clamp(1.25rem, 1rem + 1vw, 2rem);
+  color: var(--ricepaper);
+  background-color: var(--glass-dark-bg);
+  background-image: var(--glass-dark-sheen);
+  -webkit-backdrop-filter: var(--glass-blur);
+  backdrop-filter: var(--glass-blur);
+  box-shadow: var(--glass-dark-line);
+}
+
+/* Browser senza backdrop-filter: vetro più coprente */
+@supports not ((backdrop-filter: blur(1px)) or (-webkit-backdrop-filter: blur(1px))) {
+  .glass {
+    background-color: rgba(25, 25, 25, 0.85);
+  }
+}
+
+/* --------------------------------------------------------------------------
+   Bottone Stop animation (hero, footer, pagine con video): motion.js
+   -------------------------------------------------------------------------- */
+
+.motion-toggle {
+  grid-column: 3;
+  justify-self: end;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  min-height: 44px;
+  padding-inline: 0.5rem;
+  color: var(--ricepaper);
+  font-size: var(--fs-label);
+  font-weight: 600;
+  letter-spacing: 0.06em;
+  transition: color var(--dur-ui) var(--ease-out);
+}
+
+.motion-toggle:hover {
+  color: var(--ocean-on-dark);
+}
+
+.motion-toggle svg {
+  width: 12px;
+  height: 12px;
+  fill: currentColor;
+}
+
+.motion-toggle .ic-play { display: none; }
+.motion-toggle[aria-pressed="true"] .ic-play { display: block; }
+.motion-toggle[aria-pressed="true"] .ic-stop { display: none; }
+
+/* --------------------------------------------------------------------------
+   Accessibilità
+   -------------------------------------------------------------------------- */
+
+:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 3px;
+  border-radius: 2px;
+}
+
+.skip-link {
+  position: fixed;
+  top: 0.75rem;
+  left: 0.75rem;
+  z-index: 1000;
+  padding: 0.75rem 1.25rem;
+  background-color: var(--hard-grey);
+  color: var(--ricepaper);
+  font-size: var(--fs-small);
+  font-weight: 600;
+  border-radius: 999px;
+  transform: translateY(-200%);
+  transition: transform var(--dur-ui) var(--ease-out);
+}
+
+.skip-link:focus {
+  transform: translateY(0);
+}
+
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+/* Logo (simbolo SVG, colore = currentColor) */
+.logo-svg {
+  width: 100%;
+  height: auto;
+  fill: currentColor;
+  fill-rule: evenodd;
+}
+
+/* --------------------------------------------------------------------------
+   Animazione base: ogni blocco entra dal basso con dissolvenza lenta.
+   Attiva solo con JS (classe .js su <html>) e senza reduced-motion.
+   -------------------------------------------------------------------------- */
+
+@media (prefers-reduced-motion: no-preference) {
+  .js [data-reveal] {
+    opacity: 0;
+    transform: translate3d(0, 48px, 0);
+    transition:
+      opacity var(--dur-reveal) var(--ease-out),
+      transform var(--dur-reveal) var(--ease-out);
+    transition-delay: var(--reveal-delay, 0s);
+  }
+
+  .js [data-reveal].is-in {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}

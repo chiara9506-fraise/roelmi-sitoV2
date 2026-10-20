@@ -1,0 +1,302 @@
+/* ==========================================================================
+   4 · Our Portfolio (scuro) — struttura della sezione "team" di Until
+   Sopra: 4 schede prodotto (nome + funzione sopra, texture sotto).
+   Sotto: frase grande + ricerca nell'Ingredient Finder (il punto chiave).
+   Solo CSS: hover/focus mostrano la descrizione; su touch è sempre visibile.
+   ========================================================================== */
+
+.portfolio-head {
+  max-width: 22ch;
+}
+
+.portfolio-title {
+  margin-top: 1.25rem;
+  font-family: var(--font-display);
+  font-size: var(--fs-section);
+  font-weight: 500;
+  line-height: 1;
+  letter-spacing: -0.045em;
+  color: var(--ricepaper);
+}
+
+.portfolio-title span {
+  display: block;
+}
+
+.portfolio-title .eyebrow {
+  display: inline-flex;
+  margin-bottom: 1.25rem;
+}
+
+/* --------------------------------------------------------------------------
+   Schede prodotto
+   -------------------------------------------------------------------------- */
+
+.portfolio-grid {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  align-items: start;
+  gap: clamp(1rem, 0.5rem + 1.2vw, 1.75rem);
+  margin-top: var(--title-gap);
+}
+
+.product-card {
+  position: relative;
+  display: block;
+  color: var(--ricepaper);
+}
+
+/* Didascalia sopra l'immagine: nome e funzione */
+.product-caption {
+  display: flex;
+  align-items: baseline;
+  gap: 0.75rem;
+  min-height: 3.2em;
+}
+
+.product-name {
+  font-family: var(--font-display);
+  font-size: clamp(1.05rem, 0.9rem + 0.4vw, 1.3rem);
+  font-weight: 500;
+  line-height: 1.2;
+  letter-spacing: -0.02em;
+}
+
+.product-function {
+  display: block;
+  margin-top: 0.2rem;
+  font-family: var(--font-body);
+  font-size: var(--fs-small);
+  font-weight: 400;
+  letter-spacing: 0;
+  color: var(--muted-on-dark);
+}
+
+/* Immagine: tutte quadrate, stessa dimensione */
+.product-media {
+  position: relative;
+  margin-top: 1rem;
+  aspect-ratio: 1 / 1;
+  overflow: hidden;
+  border-radius: var(--r-card);
+  background-color: rgba(247, 243, 235, 0.06);
+}
+
+.product-media img {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;              /* texture a tutto riquadro */
+  transition: transform 1.2s var(--ease-out);
+}
+
+/* Descrizione: scheda glass (hover / focus) — trasparente, sfocata,
+   bordo luminoso e riflesso diagonale.
+   Tinta Ricepaper 0.50 = minimo per il contrasto: anche sopra il nero il
+   fondo resta ≈ #8E8C88 → testo Hard Grey 5.4:1 (il riflesso schiarisce,
+   quindi migliora soltanto) */
+.product-desc {
+  position: absolute;
+  inset: auto 0.75rem 0.75rem;
+  padding: 1.1rem 1.25rem;
+  border-radius: var(--r-inner);
+  background-color: var(--glass-light-bg);
+  background-image: var(--glass-light-sheen);
+  -webkit-backdrop-filter: var(--glass-blur);
+  backdrop-filter: var(--glass-blur);
+  box-shadow: var(--glass-light-line);
+  font-size: var(--fs-small);
+  line-height: 1.55;
+  color: var(--hard-grey);
+  opacity: 0;
+  transform: translate3d(0, 16px, 0);
+  transition:
+    opacity 0.45s var(--ease-out),
+    transform 0.6s var(--ease-out);
+}
+
+.product-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.4rem;
+  margin-top: 0.85rem;
+}
+
+.product-tags li {
+  padding: 0.25rem 0.65rem;
+  border: 1px solid var(--hard-grey);
+  border-radius: 999px;
+  font-size: var(--fs-label);
+  line-height: 1.4;
+  color: var(--hard-grey);
+}
+
+.product-more {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4em;
+  margin-top: 0.85rem;
+  font-weight: 600;
+  color: var(--hard-grey);
+}
+
+/* Il link è il nome del prodotto; la sua area cliccabile copre la scheda */
+.product-link {
+  color: inherit;
+}
+
+.product-link::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: 2;
+  border-radius: var(--r-card);
+}
+
+.product-card:hover .product-media img,
+.product-card:focus-within .product-media img {
+  transform: scale(1.06);
+}
+
+.product-card:hover .product-desc,
+.product-card:focus-within .product-desc {
+  opacity: 1;
+  transform: none;
+}
+
+/* Focus da tastiera: contorno attorno a tutta la scheda */
+.product-link:focus-visible {
+  outline: none;
+}
+
+.product-link:focus-visible::after {
+  outline: 2px solid var(--ocean-on-dark);
+  outline-offset: 6px;
+}
+
+/* Touch (niente hover): descrizione sempre visibile, sotto l'immagine */
+@media (hover: none) {
+  .product-desc {
+    position: static;
+    margin-top: 0.75rem;
+    padding: 0;
+    border: 0;
+    border-radius: 0;
+    background: none;
+    -webkit-backdrop-filter: none;
+    backdrop-filter: none;
+    box-shadow: none;
+    color: var(--muted-on-dark);
+    opacity: 1;
+    transform: none;
+  }
+
+  .product-tags li {
+    border-color: var(--muted-on-dark);
+    color: var(--ricepaper);
+  }
+
+  .product-more {
+    color: var(--ocean-on-dark);
+  }
+}
+
+/* Con Stop animation: niente zoom */
+.motion-paused .product-card .product-media img {
+  transform: none;
+}
+
+/* --------------------------------------------------------------------------
+   Ingredient Finder: frase grande + ricerca
+   -------------------------------------------------------------------------- */
+
+.finder {
+  display: grid;
+  grid-template-columns: minmax(0, 1.35fr) minmax(0, 1fr);
+  align-items: end;
+  gap: clamp(2rem, 1rem + 4vw, 6rem);
+  margin-top: var(--section-y);
+}
+
+.finder-title {
+  font-family: var(--font-display);
+  font-size: clamp(2rem, 1.2rem + 3vw, 4.25rem);
+  font-weight: 500;
+  line-height: 1.02;
+  letter-spacing: -0.045em;
+  color: var(--ricepaper);
+}
+
+.finder-title span {
+  color: var(--muted-on-dark);
+}
+
+/* Etichetta del campo (il campo è .pill-field, in base.css) */
+.finder-label {
+  display: block;
+  margin-bottom: 0.75rem;
+  font-size: var(--fs-small);
+  font-weight: 600;
+  color: var(--ricepaper);
+}
+
+/* --------------------------------------------------------------------------
+   Responsive
+   -------------------------------------------------------------------------- */
+
+@media (max-width: 1023.98px) {
+  .portfolio-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    row-gap: 2.5rem;
+  }
+
+  .finder {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 559.98px) {
+  .portfolio-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* --------------------------------------------------------------------------
+   Mobile: schede in una riga che scorre orizzontalmente (con aggancio)
+   I link sono focalizzabili, quindi la riga si scorre anche con il Tab.
+   -------------------------------------------------------------------------- */
+
+@media (max-width: 767.98px) {
+  .portfolio-grid {
+    display: flex;
+    gap: 1rem;
+    margin-inline: calc(-1 * var(--gutter));
+    padding: 0 var(--gutter) 0.75rem;
+    overflow-x: auto;
+    scroll-snap-type: x mandatory;
+    scroll-padding-inline: var(--gutter);
+    overscroll-behavior-x: contain;
+  }
+
+  .product-card {
+    flex: 0 0 78%;
+    scroll-snap-align: start;
+  }
+}
+
+/* Didascalia: nome + funzione, sotto l'etichetta del mercato */
+.product-caption {
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 0.6rem;
+  min-height: 0;
+}
+
+/* In riga (desktop): didascalie alte uguali, così le texture sono allineate
+   anche se un nome va a capo */
+@media (min-width: 768px) {
+  .product-caption {
+    min-height: 6.5rem;
+  }
+}

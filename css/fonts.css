@@ -1,0 +1,21 @@
+/* ==========================================================================
+   Font serviti dal sito (non da Google): niente dati dei visitatori
+   inviati a terzi (GDPR). Licenza SIL Open Font License.
+   File variabili, sottoinsieme latino: un file per famiglia, tutti i pesi.
+   ========================================================================== */
+
+@font-face {
+  font-family: "Montserrat";
+  font-style: normal;
+  font-weight: 100 900;
+  font-display: swap;
+  src: url("../fonts/montserrat-latin.woff2") format("woff2");
+}
+
+@font-face {
+  font-family: "Open Sans";
+  font-style: normal;
+  font-weight: 300 800;
+  font-display: swap;
+  src: url("../fonts/opensans-latin.woff2") format("woff2");
+}

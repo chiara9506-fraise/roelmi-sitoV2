@@ -1,0 +1,206 @@
+/* ==========================================================================
+   5 · Our Impact (chiaro)
+   Sinistra: titolo + texture verticale. Destra: 4 numeri enormi in 2×2.
+   In fondo: fascia delle certificazioni che scorre lenta (si ferma al
+   passaggio del mouse, con Stop animation e con reduced-motion).
+   ========================================================================== */
+
+.impact-grid {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1.35fr);
+  gap: clamp(2rem, 1rem + 4vw, 6rem);
+  align-items: stretch;
+}
+
+.impact-left {
+  display: flex;
+  flex-direction: column;
+  gap: clamp(1.5rem, 1rem + 1.5vw, 2.5rem);
+}
+
+.impact-title {
+  font-family: var(--font-display);
+  font-size: var(--fs-section);
+  font-weight: 500;
+  line-height: 1;
+  letter-spacing: -0.045em;
+  color: var(--hard-grey);
+}
+
+.impact-title span:not(.eyebrow) {
+  display: block;
+  margin-top: 1.25rem;
+}
+
+/* Texture verticale (decorativa) */
+.impact-texture {
+  flex: 1;
+  min-height: 320px;
+  overflow: hidden;
+  border-radius: var(--r-card);
+  background-color: var(--line);
+}
+
+.impact-texture img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+/* --------------------------------------------------------------------------
+   Numeri
+   -------------------------------------------------------------------------- */
+
+.impact-stats {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  align-content: end;
+  gap: clamp(2rem, 1rem + 3vw, 4rem) clamp(1.5rem, 1rem + 2vw, 3rem);
+}
+
+.stat {
+  padding-top: 1rem;
+  border-top: 1px solid var(--hard-grey);
+}
+
+.stat-num {
+  display: block;
+  font-family: var(--font-display);
+  font-size: clamp(3.5rem, 1.8rem + 6vw, 8rem);
+  font-weight: 500;
+  line-height: 1;
+  letter-spacing: -0.055em;
+  color: var(--hard-grey);
+  font-variant-numeric: tabular-nums;
+}
+
+/* Il "+" in Ocean: unico accento (4.69:1, testo grande) */
+.stat-plus {
+  color: var(--accent);
+}
+
+.stat-label {
+  display: block;
+  margin-top: 0.75rem;
+  font-size: var(--fs-body);
+  color: var(--fg-muted);
+}
+
+/* --------------------------------------------------------------------------
+   Fascia certificazioni
+   -------------------------------------------------------------------------- */
+
+.certs {
+  margin-top: var(--section-y);
+  overflow: hidden;
+  border-block: 1px solid var(--line);
+}
+
+.certs-track {
+  display: flex;
+  width: max-content;
+  animation: certs-scroll 40s linear infinite;
+}
+
+.certs-list {
+  display: flex;
+  align-items: center;
+  flex: none;
+}
+
+.certs-list li {
+  display: flex;
+  align-items: center;
+  gap: clamp(1.5rem, 1rem + 2vw, 3rem);
+  padding: 1.5rem 0 1.5rem clamp(1.5rem, 1rem + 2vw, 3rem);
+  font-family: var(--font-display);
+  font-size: clamp(1.125rem, 0.9rem + 0.8vw, 1.625rem);
+  font-weight: 500;
+  letter-spacing: 0.02em;
+  text-transform: uppercase;
+  white-space: nowrap;
+  color: var(--hard-grey);
+}
+
+/* Separatore: goccia del logo ROELMI in Ocean (decorativa) */
+.certs-list li::after {
+  content: "";
+  flex: none;
+  width: 0.6em;
+  height: 0.9em;
+  background-color: var(--accent);
+  -webkit-mask: var(--roelmi-drop) center / contain no-repeat;
+  mask: var(--roelmi-drop) center / contain no-repeat;
+}
+
+@keyframes certs-scroll {
+  to { transform: translate3d(-50%, 0, 0); }
+}
+
+/* Si ferma: al passaggio del mouse, con Stop animation, con reduced-motion */
+.certs:hover .certs-track,
+.motion-paused .certs-track {
+  animation-play-state: paused;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .certs-track {
+    animation: none;
+  }
+
+  /* Ferma: la lista va a capo invece di scorrere */
+  .certs-track,
+  .certs-list {
+    width: auto;
+    flex-wrap: wrap;
+  }
+
+  .certs-list[aria-hidden="true"] {
+    display: none;
+  }
+}
+
+/* --------------------------------------------------------------------------
+   Responsive
+   -------------------------------------------------------------------------- */
+
+@media (max-width: 899.98px) {
+  .impact-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .impact-texture {
+    flex: none;
+    height: 260px;
+    min-height: 0;
+  }
+}
+
+@media (max-width: 479.98px) {
+  .impact-stats {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* Mobile: numeri sempre su 2 colonne, un po' più piccoli */
+@media (max-width: 479.98px) {
+  .impact-stats {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 1.75rem 1rem;
+  }
+
+  .stat-num {
+    font-size: clamp(2.5rem, 13vw, 3.5rem);
+  }
+
+  .stat-label {
+    font-size: var(--fs-small);
+  }
+}
+
+/* Gocce separatrici a colori alternati (accenti della palette).
+   Sono decorative: il contrasto non serve a leggere i nomi.
+   6 voci per lista, ciclo di 3 → la giunzione del carosello resta continua */
+.certs-list li:nth-child(3n + 1)::after { background-color: var(--antique); }
+.certs-list li:nth-child(3n + 2)::after { background-color: var(--olive); }
+.certs-list li:nth-child(3n)::after     { background-color: var(--cerulean); }

@@ -1,0 +1,121 @@
+/* ==========================================================================
+   Pagina prodotto — apertura (due varianti, scelte nel generatore):
+   B .pd-hero--word: la texture si muove e si avvicina dentro il nome
+   A .pd-hero--drop: "la goccia che si apre", descritta qui sotto
+   Avanzamento p (0→1) dato dallo scroll della sezione:
+   - 0 → 0.75  la goccia ROELMI cresce fino a coprire lo schermo
+   - 0.68 → 0.92  la goccia si fonde con la texture intera + velo
+   - il nome gigante sfuma all'inizio, la scheda di vetro entra alla fine
+   Con Stop animation / reduced-motion: niente animazione, stato finale
+   (quello del CSS) e sezione di altezza normale.
+   Se si arriva con il Tab sulla scheda ancora invisibile, la pagina scorre
+   fino a mostrarla.
+   ========================================================================== */
+
+(function () {
+  'use strict';
+
+  var hero = document.querySelector('.pd-hero');
+  if (!hero) return;
+
+  var card = hero.querySelector('.pd-hero-card');
+  var stage = hero.querySelector('.pd-hero-stage');
+  var breadcrumb = hero.querySelector('.pd-breadcrumb');
+  var word = hero.querySelector('.pd-hero-word');
+  var mobileMq = window.matchMedia('(max-width: 899.98px)');
+  var VARS = ['--drop-h', '--drop-x', '--drop-y', '--drop-o', '--full', '--name-o', '--card-o', '--name-top'];
+
+  function clamp(v) { return v < 0 ? 0 : v > 1 ? 1 : v; }
+  function lerp(a, b, t) { return a + (b - a) * t; }
+  function easeInOut(v) { return v < 0.5 ? 2 * v * v : 1 - Math.pow(-2 * v + 2, 2) / 2; }
+
+  function motionOn() {
+    return window.RoelmiMotion ? !window.RoelmiMotion.isPaused() : true;
+  }
+
+  function progress() {
+    var total = hero.offsetHeight - window.innerHeight;
+    if (total <= 0) return 1;
+    return clamp(-hero.getBoundingClientRect().top / total);
+  }
+
+  function setFinal() {
+    hero.classList.remove('is-animated', 'is-card-hidden');
+    VARS.forEach(function (v) { hero.style.removeProperty(v); });
+  }
+
+  // Variante B: la texture si muove e si avvicina dentro le lettere
+  var isWord = hero.classList.contains('pd-hero--word');
+
+  function renderWord(p) {
+    hero.style.setProperty('--word-y', lerp(20, 80, p).toFixed(2) + '%');
+    hero.style.setProperty('--word-size', lerp(130, 190, easeInOut(p)).toFixed(1) + '%');
+  }
+
+  function render() {
+    if (!motionOn()) {
+      setFinal();
+      hero.style.removeProperty('--word-y');
+      hero.style.removeProperty('--word-size');
+      return;
+    }
+    hero.classList.add('is-animated');
+
+    // B: la sezione scorre normalmente, p va da 0 (in cima) a 1 (uscita)
+    if (isWord) {
+      var r = hero.getBoundingClientRect();
+      renderWord(clamp(-r.top / Math.max(1, r.height)));
+      return;
+    }
+    var p = progress();
+    var vh = window.innerHeight;
+    var big = Math.max(window.innerWidth, vh) * 5.5;  // goccia che copre tutto
+    var mobile = mobileMq.matches;
+    var g = easeInOut(clamp(p / 0.75));
+
+    var startH = vh * (mobile ? 0.46 : 0.72);
+    var x = lerp(mobile ? 50 : 72, 50, g);
+    // Desktop: goccia e nome centrati nello spazio libero sotto il percorso
+    // (non nello schermo intero). Il centro si sposta verso la metà esatta
+    // man mano che la goccia cresce oltre lo schermo.
+    var y;
+    if (mobile) {
+      y = lerp(32, 50, g);
+    } else {
+      var stageTop = stage.getBoundingClientRect().top;
+      var free = breadcrumb ? breadcrumb.getBoundingClientRect().bottom - stageTop : 0;
+      var center = (free + vh) / 2;
+      var h = lerp(startH, big, g);
+      var wanted = lerp(center, vh / 2, g);
+      y = h < vh ? ((wanted - h / 2) / (vh - h)) * 100 : 50;
+      // La parola (non tutto il blocco con l'etichetta) a metà altezza della goccia
+      var offset = word ? word.offsetTop + word.offsetHeight / 2 : 0;
+      hero.style.setProperty('--name-top', (center - offset).toFixed(1) + 'px');
+    }
+    var cardO = clamp((p - 0.72) / 0.2);
+
+    hero.style.setProperty('--drop-h', lerp(startH, big, g).toFixed(1) + 'px');
+    hero.style.setProperty('--drop-x', x.toFixed(2) + '%');
+    hero.style.setProperty('--drop-y', y.toFixed(2) + '%');
+    hero.style.setProperty('--drop-o', (1 - clamp((p - 0.7) / 0.22)).toFixed(3));
+    hero.style.setProperty('--full', clamp((p - 0.68) / 0.22).toFixed(3));
+    hero.style.setProperty('--name-o', (1 - clamp(p / 0.35)).toFixed(3));
+    hero.style.setProperty('--card-o', cardO.toFixed(3));
+    hero.classList.toggle('is-card-hidden', cardO < 0.05);
+  }
+
+  // Tab sulla scheda ancora invisibile: porta lo scroll alla fine dell'apertura
+  if (card) {
+    card.addEventListener('focusin', function () {
+      if (!hero.classList.contains('is-card-hidden')) return;
+      var total = hero.offsetHeight - window.innerHeight;
+      var top = hero.getBoundingClientRect().top + window.scrollY;
+      window.scrollTo({ top: top + total, behavior: 'auto' });
+    });
+  }
+
+  window.addEventListener('scroll', render, { passive: true });
+  window.addEventListener('resize', render);
+  if (window.RoelmiMotion) window.RoelmiMotion.onChange(render);
+  render();
+})();

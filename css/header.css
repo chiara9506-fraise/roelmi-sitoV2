@@ -1,0 +1,701 @@
+/* ==========================================================================
+   Header — pillola di vetro in stile Until, menu ROELMI.
+   - In cima (desktop ≥1200px): pillola larga, logo · voci con tendina · Contact
+   - Dopo lo scroll: le voci sfumano, la pillola si stringe → goccia · Contact · Menu
+   - Mobile: sempre goccia · Contact al centro · Menu
+   - Il Menu apre un pannello Ricepaper a tutto schermo
+   La tinta del vetro garantisce il contrasto del testo su qualsiasi sfondo.
+   ========================================================================== */
+
+.site-header {
+  /* Vetro scuro (sopra il video e le sezioni scure).
+     Vetro scuro comune (0.68, vedi base.css): anche sopra un bianco
+     il fondo resta ≈ #6B6B6B → testo Ricepaper ≥ 4.5:1 */
+  --glass-bg: var(--glass-dark-bg);
+  --glass-line: rgba(247, 243, 235, 0.14);
+  --glass-sheen: rgba(247, 243, 235, 0.06);
+  --pill-fg: var(--ricepaper);
+  --pill-focus: var(--ocean-on-dark);
+  --cta-bg: var(--ricepaper);
+  --cta-fg: var(--hard-grey);
+  --cta-hover: var(--ocean-on-dark);
+
+  position: fixed;
+  inset: 0 0 auto;
+  z-index: 100;
+  padding-top: var(--header-top);
+  pointer-events: none;
+}
+
+/* Vetro chiaro sopra le sezioni chiare e con il menu aperto.
+   Vetro chiaro comune (0.50, vedi base.css): anche sopra il nero il fondo
+   resta ≈ #8E8C88 → testo Hard Grey ≥ 5.4:1 */
+.site-header.is-on-light,
+.site-header.is-menu-open {
+  --glass-bg: var(--glass-light-bg);
+  --glass-line: rgba(25, 25, 25, 0.1);
+  --glass-sheen: rgba(255, 255, 255, 0.2);
+  --pill-fg: var(--hard-grey);
+  --pill-focus: var(--ocean);
+  --cta-bg: var(--hard-grey);
+  --cta-fg: var(--ricepaper);
+  --cta-hover: var(--ocean);
+}
+
+/* --------------------------------------------------------------------------
+   La pillola
+   -------------------------------------------------------------------------- */
+
+.header-pill {
+  position: relative;
+  z-index: 2;
+  isolation: isolate;
+  display: flex;
+  align-items: center;
+  gap: 1.5rem;
+  width: min(1320px, calc(100% - 2 * var(--gutter)));
+  height: var(--pill-h);
+  margin-inline: auto;
+  padding: 0 0.375rem 0 1.375rem;
+  border-radius: 28px;
+  color: var(--pill-fg);
+  pointer-events: auto;
+  transition:
+    width 0.75s var(--ease-in-out),
+    border-radius 0.75s var(--ease-in-out),
+    color 0.4s var(--ease-out);
+}
+
+/* Il vetro sta su uno pseudo-elemento: backdrop-filter sulla pillola
+   intrappolerebbe il pannello fisso del menu dentro la pillola.
+   Livelli: pannello (1) < vetro (2) < logo, voci, bottoni (3). */
+.header-pill::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: 2;
+  border-radius: inherit;
+  background-color: var(--glass-bg);
+  /* Riflesso diagonale, come in Until (leggero: non deve schiarire il testo) */
+  background-image: linear-gradient(
+    45deg,
+    var(--glass-sheen) 0%,
+    rgba(247, 243, 235, 0) 45%,
+    rgba(0, 0, 0, 0.12) 100%
+  );
+  /* Saturazione alta: il vetro prende il colore di ciò che c'è sotto */
+  -webkit-backdrop-filter: var(--glass-blur);
+  backdrop-filter: var(--glass-blur);
+  box-shadow: inset 0 0 0 1px var(--glass-line);
+  pointer-events: none;
+  transition:
+    background-color 0.4s var(--ease-out),
+    box-shadow 0.4s var(--ease-out);
+}
+
+.header-logo,
+.header-actions,
+.menu-toggle {
+  position: relative;
+  z-index: 3;
+}
+
+/* Ordine a schermo: logo · (voci) · Contact · menu.
+   Nel codice l'hamburger viene subito dopo il logo, così con il Tab si
+   raggiunge prima delle voci del pannello mobile. */
+.header-logo    { order: 0; }
+.main-nav       { order: 1; }
+.header-actions { order: 2; }
+.menu-toggle    { order: 3; }
+
+/* Al caricamento (anche a metà pagina) niente transizioni: la pillola
+   compare già nello stato giusto */
+.site-header.is-init *,
+.site-header.is-init *::before,
+.site-header.is-init *::after {
+  transition: none !important;
+}
+
+/* Browser senza backdrop-filter: vetro più coprente */
+@supports not ((backdrop-filter: blur(1px)) or (-webkit-backdrop-filter: blur(1px))) {
+  .header-pill::after {
+    background-color: rgba(25, 25, 25, 0.88);
+  }
+
+  .site-header.is-on-light .header-pill::after,
+  .site-header.is-menu-open .header-pill::after {
+    background-color: rgba(247, 243, 235, 0.94);
+  }
+}
+
+.site-header .header-pill :focus-visible {
+  outline-color: var(--pill-focus);
+}
+
+/* --------------------------------------------------------------------------
+   Logo: completo in cima, solo la goccia quando la pillola è stretta
+   -------------------------------------------------------------------------- */
+
+.header-logo {
+  min-width: 44px;   /* area di tocco ≥ 44px anche con la sola goccia */
+  display: flex;
+  align-items: center;
+  flex: none;
+  min-height: 44px;
+  color: var(--pill-fg);
+  transition: color 0.4s var(--ease-out);
+}
+
+/* Il logo sfuma nella goccia: il contenitore si stringe ma il disegno non
+   si schiaccia (max-width: none), viene solo tagliato mentre svanisce */
+.logo-full,
+.logo-drop {
+  flex: none;
+  overflow: hidden;
+  transition:
+    width 0.7s var(--ease-out),
+    opacity 0.3s var(--ease-out);
+}
+
+.logo-full {
+  width: 148px;
+}
+
+.logo-drop {
+  width: 0;
+  opacity: 0;
+}
+
+.logo-full .logo-svg,
+.logo-drop .logo-svg {
+  max-width: none;
+}
+
+.logo-full .logo-svg {
+  width: 148px;
+}
+
+.logo-drop .logo-svg {
+  width: 18px;
+}
+
+/* --------------------------------------------------------------------------
+   Azioni: Contact (+ Menu quando serve)
+   -------------------------------------------------------------------------- */
+
+.header-actions {
+  display: flex;
+  align-items: center;
+  gap: 0.25rem;
+  margin-left: auto;
+}
+
+/* Contact: solo nella pillola larga (desktop in cima). Quando la pillola si
+   stringe esce allargandosi a zero; resta comunque nel menu. */
+.header-cta {
+  flex: none;
+  max-width: 160px;
+  min-height: 44px;
+  overflow: hidden;
+  border-color: var(--cta-bg);
+  background-color: var(--cta-bg);
+  color: var(--cta-fg);
+  font-size: var(--fs-small);
+  transition:
+    max-width 0.5s var(--ease-out),
+    padding 0.5s var(--ease-out),
+    border-width 0.5s var(--ease-out),
+    opacity 0.25s var(--ease-out),
+    visibility 0s linear 0s,
+    background-color var(--dur-ui) var(--ease-out),
+    border-color var(--dur-ui) var(--ease-out),
+    color var(--dur-ui) var(--ease-out);
+}
+
+.header-cta:hover {
+  border-color: var(--cta-hover);
+  background-color: var(--cta-hover);
+  color: var(--cta-fg);
+}
+
+.site-header .header-pill .header-cta:focus-visible {
+  outline-color: var(--pill-fg);
+}
+
+.site-header.is-compact .header-cta,
+.site-header.is-panel-mode .header-cta {
+  max-width: 0;
+  padding-inline: 0;
+  border-width: 0;
+  opacity: 0;
+  visibility: hidden;
+  transition:
+    max-width 0.5s var(--ease-out),
+    padding 0.5s var(--ease-out),
+    border-width 0.5s var(--ease-out),
+    opacity 0.2s var(--ease-out),
+    visibility 0s linear 0.5s;
+}
+
+/* Hamburger a tre linee, come Until.
+   Nella pillola larga è chiuso (largo 0, nascosto, non raggiungibile da
+   tastiera); quando serve entra allargandosi. */
+.menu-toggle {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex: none;
+  width: 0;
+  /* Nascosto: annulla anche lo spazio tra gli elementi della pillola, così
+     Contact ha lo stesso margine a destra che sopra e sotto */
+  margin-left: -1.5rem;
+  height: 44px;
+  overflow: hidden;
+  color: var(--pill-fg);
+  opacity: 0;
+  visibility: hidden;
+  transition:
+    width 0.5s var(--ease-out),
+    margin-left 0.5s var(--ease-out),
+    opacity 0.25s var(--ease-out),
+    visibility 0s linear 0.5s;
+}
+
+.site-header.is-compact .menu-toggle,
+.site-header.is-panel-mode .menu-toggle {
+  width: 48px;
+  margin-left: 0;
+  opacity: 1;
+  visibility: visible;
+  transition:
+    width 0.5s var(--ease-out),
+    margin-left 0.5s var(--ease-out),
+    opacity 0.35s var(--ease-out) 0.15s,
+    visibility 0s;
+}
+
+.menu-toggle__icon {
+  position: relative;
+  width: 22px;
+  height: 14px;
+}
+
+.menu-toggle__icon span {
+  position: absolute;
+  left: 0;
+  width: 100%;
+  height: 1.5px;
+  border-radius: 2px;
+  background-color: currentColor;
+  transition:
+    transform var(--dur-ui) var(--ease-out),
+    opacity var(--dur-ui) var(--ease-out),
+    top var(--dur-ui) var(--ease-out);
+}
+
+.menu-toggle__icon span:nth-child(1) { top: 0; }
+.menu-toggle__icon span:nth-child(2) { top: calc(50% - 0.75px); }
+.menu-toggle__icon span:nth-child(3) { top: calc(100% - 1.5px); }
+
+.menu-toggle[aria-expanded="true"] .menu-toggle__icon span:nth-child(1) {
+  top: calc(50% - 0.75px);
+  transform: rotate(45deg);
+}
+
+.menu-toggle[aria-expanded="true"] .menu-toggle__icon span:nth-child(2) {
+  opacity: 0;
+}
+
+.menu-toggle[aria-expanded="true"] .menu-toggle__icon span:nth-child(3) {
+  top: calc(50% - 0.75px);
+  transform: rotate(-45deg);
+}
+
+/* --------------------------------------------------------------------------
+   Voci di navigazione — base comune
+   -------------------------------------------------------------------------- */
+
+.nav-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4em;
+  min-height: 44px;
+  font-family: var(--font-body);
+  font-weight: 600;
+  line-height: 1.2;
+  text-align: left;
+}
+
+.nav-chev {
+  width: 9px;
+  height: 9px;
+  flex: none;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 1.5;
+  transition: transform var(--dur-ui) var(--ease-out);
+}
+
+.nav-trigger[aria-expanded="true"] .nav-chev {
+  transform: rotate(180deg);
+}
+
+.nav-item--panel-only {
+  display: none;
+}
+
+/* --------------------------------------------------------------------------
+   Modalità "in riga": desktop, pillola larga
+   -------------------------------------------------------------------------- */
+
+/* Le voci stanno al centro della pillola ma fuori dal flusso: così logo e
+   Contact non si spostano mai quando le voci entrano o escono */
+.site-header:not(.is-panel-mode) .main-nav {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 50%;
+  z-index: 3;
+  display: flex;
+  align-items: center;
+  transform: translateX(-50%);
+  opacity: 1;
+  visibility: visible;
+  /* Rientro: le voci tornano quando la pillola si è già allargata */
+  transition:
+    opacity 0.45s var(--ease-out) 0.3s,
+    visibility 0s;
+}
+
+/* Uscita: le voci sfumano prima che la pillola si stringa */
+.site-header.is-compact:not(.is-panel-mode) .main-nav {
+  opacity: 0;
+  visibility: hidden;
+  pointer-events: none;
+  transition:
+    opacity 0.2s var(--ease-out),
+    visibility 0s linear 0.2s;
+}
+
+.site-header:not(.is-panel-mode) .nav-list {
+  display: flex;
+  align-items: center;
+  gap: clamp(1.25rem, 2.2vw, 2.5rem);
+}
+
+.site-header:not(.is-panel-mode) .nav-item {
+  position: relative;
+}
+
+.site-header:not(.is-panel-mode) .nav-link {
+  position: relative;
+  font-size: var(--fs-small);
+  color: var(--pill-fg);
+}
+
+/* Sottolineatura sottile al passaggio */
+.site-header:not(.is-panel-mode) .nav-link::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 10px;
+  height: 1px;
+  background-color: currentColor;
+  transform: scaleX(0);
+  transform-origin: right;
+  transition: transform 0.5s var(--ease-out);
+}
+
+.site-header:not(.is-panel-mode) .nav-trigger::after {
+  right: calc(9px + 0.4em);
+}
+
+.site-header:not(.is-panel-mode) .nav-link:hover::after,
+.site-header:not(.is-panel-mode) .nav-trigger[aria-expanded="true"]::after {
+  transform: scaleX(1);
+  transform-origin: left;
+}
+
+/* Tendina */
+.site-header:not(.is-panel-mode) .subnav {
+  position: absolute;
+  top: calc(100% + 1.1rem);
+  left: -1.5rem;
+  min-width: 248px;
+  padding: 0.75rem 1.5rem;
+  background-color: var(--ricepaper);
+  color: var(--hard-grey);
+  border-radius: var(--r-card);
+  box-shadow: inset 0 0 0 1px var(--line);
+  opacity: 0;
+  visibility: hidden;
+  transform: translate3d(0, -8px, 0);
+  transition:
+    opacity var(--dur-ui) var(--ease-out),
+    transform var(--dur-ui) var(--ease-out),
+    visibility 0s linear var(--dur-ui);
+}
+
+/* Ponte invisibile tra voce e tendina, per l'hover */
+.site-header:not(.is-panel-mode) .subnav::before {
+  content: "";
+  position: absolute;
+  inset: -1.1rem 0 auto;
+  height: 1.1rem;
+}
+
+.site-header:not(.is-panel-mode) .nav-trigger[aria-expanded="true"] + .subnav {
+  opacity: 1;
+  visibility: visible;
+  transform: none;
+  transition:
+    opacity var(--dur-ui) var(--ease-out),
+    transform var(--dur-ui) var(--ease-out),
+    visibility 0s;
+}
+
+.site-header:not(.is-panel-mode) .subnav a {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  min-height: 44px;
+  font-size: var(--fs-small);
+  color: var(--hard-grey);
+  border-bottom: 1px solid var(--line);
+  transition: color var(--dur-ui) var(--ease-out);
+}
+
+.site-header:not(.is-panel-mode) .subnav li:last-child a {
+  border-bottom: 0;
+}
+
+.site-header:not(.is-panel-mode) .subnav a::after {
+  content: "→";
+  color: var(--ocean);
+  opacity: 0;
+  transform: translateX(-6px);
+  transition: opacity var(--dur-ui) var(--ease-out), transform var(--dur-ui) var(--ease-out);
+}
+
+.site-header:not(.is-panel-mode) .subnav a:hover {
+  color: var(--ocean);
+}
+
+.site-header:not(.is-panel-mode) .subnav a:hover::after {
+  opacity: 1;
+  transform: none;
+}
+
+.site-header:not(.is-panel-mode) .subnav :focus-visible {
+  outline-color: var(--ocean);
+}
+
+/* --------------------------------------------------------------------------
+   Pillola stretta (dopo lo scroll)
+   -------------------------------------------------------------------------- */
+
+.site-header.is-compact .logo-full {
+  width: 0;
+  opacity: 0;
+}
+
+.site-header.is-compact .logo-drop {
+  width: 18px;
+  opacity: 1;
+}
+
+/* Desktop: la pillola si stringe al centro, angoli un po' meno tondi (Until) */
+@media (min-width: 1200px) {
+  .site-header.is-compact .header-pill {
+    width: 400px;
+    border-radius: 20px;
+    overflow: hidden;
+  }
+}
+
+/* --------------------------------------------------------------------------
+   Mobile (<1200px): pillola sempre uguale → goccia · Menu.
+   Contact è dentro il menu.
+   -------------------------------------------------------------------------- */
+
+@media (max-width: 1199.98px) {
+  .logo-full {
+    display: none;
+  }
+
+  .logo-drop {
+    width: 18px;
+    opacity: 1;
+  }
+
+  .header-pill {
+    border-radius: 20px;
+  }
+}
+
+/* --------------------------------------------------------------------------
+   Modalità "pannello": mobile o pillola stretta.
+   Il pannello chiuso non ha transizioni: cambiare modalità durante lo scroll
+   non deve mai far comparire il pannello (niente "lampo" chiaro).
+   Si anima solo quando si apre (.is-open) o si chiude (.is-closing).
+   -------------------------------------------------------------------------- */
+
+.site-header.is-panel-mode .main-nav {
+  position: fixed;
+  inset: 0;
+  z-index: 1;
+  display: flex;
+  flex-direction: column;
+  padding: calc(var(--header-top) + var(--pill-h) + 2rem) var(--gutter) 2.5rem;
+  background-color: var(--ricepaper);
+  color: var(--hard-grey);
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  pointer-events: auto;
+  opacity: 0;
+  visibility: hidden;
+  transition: none;
+}
+
+.site-header.is-panel-mode .main-nav.is-open {
+  opacity: 1;
+  visibility: visible;
+  transition:
+    opacity 0.45s var(--ease-out),
+    visibility 0s;
+}
+
+.site-header.is-panel-mode .main-nav.is-closing {
+  transition:
+    opacity 0.45s var(--ease-out),
+    visibility 0s linear 0.45s;
+}
+
+.site-header.is-panel-mode .nav-list {
+  width: 100%;
+  max-width: 960px;
+  margin-inline: auto;
+}
+
+.site-header.is-panel-mode .nav-list > li {
+  border-bottom: 1px solid var(--line);
+  opacity: 0;
+  transform: translate3d(0, 24px, 0);
+  transition: opacity 0.6s var(--ease-out), transform 0.6s var(--ease-out);
+}
+
+.site-header.is-panel-mode .nav-list > li:first-child {
+  border-top: 1px solid var(--line);
+}
+
+.site-header.is-panel-mode .nav-list > .nav-item--panel-only {
+  display: block;
+}
+
+.site-header.is-panel-mode .main-nav.is-open .nav-list > li {
+  opacity: 1;
+  transform: none;
+}
+
+.site-header.is-panel-mode .main-nav.is-open .nav-list > li:nth-child(2) { transition-delay: 0.04s; }
+.site-header.is-panel-mode .main-nav.is-open .nav-list > li:nth-child(3) { transition-delay: 0.08s; }
+.site-header.is-panel-mode .main-nav.is-open .nav-list > li:nth-child(4) { transition-delay: 0.12s; }
+.site-header.is-panel-mode .main-nav.is-open .nav-list > li:nth-child(5) { transition-delay: 0.16s; }
+.site-header.is-panel-mode .main-nav.is-open .nav-list > li:nth-child(6) { transition-delay: 0.20s; }
+.site-header.is-panel-mode .main-nav.is-open .nav-list > li:nth-child(7) { transition-delay: 0.24s; }
+
+.site-header.is-panel-mode .nav-list > li > .nav-link {
+  width: 100%;
+  justify-content: space-between;
+  min-height: 64px;
+  font-family: var(--font-display);
+  font-size: clamp(1.75rem, 1.2rem + 2.2vw, 2.5rem);
+  font-weight: 500;
+  letter-spacing: -0.035em;
+  color: var(--hard-grey);
+  transition: color var(--dur-ui) var(--ease-out);
+}
+
+.site-header.is-panel-mode .nav-list > li > .nav-link:hover {
+  color: var(--ocean);
+}
+
+.site-header.is-panel-mode .nav-chev {
+  width: 14px;
+  height: 14px;
+}
+
+/* Accordion dei sottomenu */
+.site-header.is-panel-mode .subnav {
+  display: grid;
+  grid-template-rows: 0fr;
+  visibility: hidden;
+  transition:
+    grid-template-rows 0.5s var(--ease-out),
+    visibility 0s linear 0.5s;
+}
+
+.site-header.is-panel-mode .subnav > ul {
+  overflow: hidden;
+  min-height: 0;
+}
+
+.site-header.is-panel-mode .nav-trigger[aria-expanded="true"] + .subnav {
+  grid-template-rows: 1fr;
+  visibility: visible;
+  transition:
+    grid-template-rows 0.5s var(--ease-out),
+    visibility 0s;
+}
+
+.site-header.is-panel-mode .subnav li:last-child {
+  padding-bottom: 1rem;
+}
+
+.site-header.is-panel-mode .subnav a {
+  display: flex;
+  align-items: center;
+  min-height: 44px;
+  font-size: var(--fs-body);
+  color: var(--muted);
+  transition: color var(--dur-ui) var(--ease-out);
+}
+
+.site-header.is-panel-mode .subnav a:hover {
+  color: var(--ocean);
+}
+
+.site-header.is-panel-mode .main-nav :focus-visible {
+  outline-color: var(--ocean);
+}
+
+/* Senza JS su schermi stretti: voci in riga sotto la pillola */
+@media (max-width: 1199.98px) {
+  .no-js .main-nav {
+    position: absolute;
+    top: calc(100% + 0.5rem);
+    left: var(--gutter);
+    right: var(--gutter);
+    padding: 0.5rem 1rem;
+    border-radius: var(--r-card);
+    background-color: var(--ricepaper);
+    color: var(--hard-grey);
+  }
+
+  .no-js .nav-list {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0 1.25rem;
+  }
+
+  .no-js .subnav {
+    display: none;
+  }
+}
+
+/* Blocca lo scroll della pagina con il pannello aperto */
+.has-menu-open {
+  overflow: hidden;
+}
