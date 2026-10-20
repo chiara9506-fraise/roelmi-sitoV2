@@ -314,24 +314,6 @@
 
   mobileMq.addEventListener('change', function (e) { if (!e.matches) closePanel(); });
 
-  /* ------------------------------------------------------------------------
-     Video dell'apertura (loop), fermo con Stop animation / reduced-motion
-     ------------------------------------------------------------------------ */
-
-  var video = document.querySelector('.fx-video');
-  if (video) {
-    video.muted = true;
-    if (video.dataset.src) video.src = video.dataset.src;
-    var sync = function () {
-      var paused = window.RoelmiMotion ? window.RoelmiMotion.isPaused() : false;
-      if (paused) video.pause();
-      else { var p = video.play(); if (p && p.catch) p.catch(function () {}); }
-    };
-    // Se il file non c'è ancora resta la texture (poster)
-    video.addEventListener('error', function () { video.removeAttribute('src'); video.load(); }, true);
-    if (window.RoelmiMotion) window.RoelmiMotion.onChange(sync);
-    sync();
-  }
 
   /* ------------------------------------------------------------------------
      Avvio

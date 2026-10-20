@@ -1,6 +1,6 @@
 /* ==========================================================================
    Ingredient Finder
-   - Apertura: video in loop della texture + vetro scuro con titolo e ricerca
+   - Apertura: texture 13 (zoom lentissimo) + vetro scuro con titolo e ricerca
    - Filtri a pillole in gruppi a tendina (come SITO 1): colonna ferma su
      desktop, pannello a tutto schermo su mobile
    - Risultati: schede con la texture dell'ingrediente, vetro chiaro in hover
@@ -32,10 +32,28 @@
   z-index: -1;
 }
 
-.fx-video {
+/* Texture 13: si avvicina e si allontana lentissimamente.
+   Ferma con lo Stop animation del footer e con reduced-motion */
+.fx-texture {
   width: 100%;
   height: 100%;
   object-fit: cover;
+  animation: fx-texture-drift 40s ease-in-out infinite alternate;
+}
+
+@keyframes fx-texture-drift {
+  from { transform: scale(1); }
+  to   { transform: scale(1.1) translate3d(-1.5%, -1%, 0); }
+}
+
+.motion-paused .fx-texture {
+  animation-play-state: paused;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .fx-texture {
+    animation: none;
+  }
 }
 
 .fx-glass {
@@ -75,21 +93,6 @@
   margin-bottom: 0.6rem;
   font-size: var(--fs-small);
   font-weight: 600;
-  color: var(--ricepaper);
-}
-
-/* Stop animation sopra il video: su una pillola di vetro scuro, così il
-   testo resta leggibile su qualsiasi fotogramma */
-.fx-motion {
-  position: absolute;
-  right: clamp(0.75rem, 0.5rem + 1.5vw, 1.75rem);
-  bottom: clamp(0.75rem, 0.5rem + 1.5vw, 1.75rem);
-  padding-inline: 1rem;
-  border-radius: 999px;
-  background-color: var(--glass-dark-bg);
-  -webkit-backdrop-filter: var(--glass-blur);
-  backdrop-filter: var(--glass-blur);
-  box-shadow: var(--glass-dark-line);
   color: var(--ricepaper);
 }
 
@@ -647,13 +650,6 @@
   .fx-glass {
     padding: 1.1rem;
     border-radius: var(--r-inner);
-  }
-
-  /* Su telefono il vetro occupa tutta la parte bassa: il bottone resta in alto */
-  .fx-motion {
-    top: 0.6rem;
-    bottom: auto;
-    right: 0.6rem;
   }
 }
 

@@ -132,16 +132,13 @@
     <span id="top"></span>
 
     <!-- ==================================================================
-         APERTURA — video in loop della texture + vetro con la ricerca
-         Video: video/finder-loop.mp4 (finché manca si vede la texture)
+         APERTURA — texture 13 (zoom lentissimo) + vetro con la ricerca
          ================================================================== -->
     <section class="fx-hero section theme-dark" aria-labelledby="finder-title">
       <div class="container">
         <div class="fx-stage">
           <div class="fx-bg" aria-hidden="true">
-            <video class="fx-video" muted loop playsinline preload="metadata"
-                   poster="video/hero-home-poster.jpg"
-                   data-src="video/finder-loop.mp4"></video>
+            <img class="fx-texture" src="images/finder/texture-13.jpg" alt="" decoding="async" fetchpriority="high">
           </div>
 
           <div class="fx-glass glass">
@@ -159,12 +156,6 @@
               </div>
             </form>
           </div>
-
-          <button class="motion-toggle fx-motion" type="button" aria-pressed="false" data-motion-toggle>
-            <svg class="ic-stop" viewBox="0 0 12 12" aria-hidden="true" focusable="false"><rect x="2" y="1.5" width="2.5" height="9"/><rect x="7.5" y="1.5" width="2.5" height="9"/></svg>
-            <svg class="ic-play" viewBox="0 0 12 12" aria-hidden="true" focusable="false"><path d="M3 1.5l7 4.5-7 4.5z"/></svg>
-            <span data-motion-label>Stop animation</span>
-          </button>
         </div>
       </div>
     </section>
