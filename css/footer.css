@@ -283,3 +283,79 @@
     gap: 0 1rem;
   }
 }
+
+/* --------------------------------------------------------------------------
+   Mobile, ancora più snello:
+   - evento: etichetta, titolo e bottone (la descrizione è nella pagina evento)
+   - logo e social sulla stessa riga, senza la frase
+   - voci delle colonne affiancate su una o due righe (già sopra)
+   - spazi ridotti; target touch sempre ≥ 44px
+   -------------------------------------------------------------------------- */
+
+@media (max-width: 699.98px) {
+  .site-footer {
+    padding-top: 1.5rem;
+  }
+
+  .ft-event {
+    grid-template-columns: minmax(0, 1fr) auto;
+    gap: 0.25rem 0.75rem;
+    padding: 0.9rem 1rem;
+  }
+
+  .ft-event-tag {
+    grid-column: 1 / -1;
+    font-size: 0.8125rem;
+  }
+
+  .ft-event-title {
+    font-size: 1.125rem;
+  }
+
+  .ft-event-desc {
+    display: none;
+  }
+
+  .ft-event .btn {
+    align-self: center;
+    padding-inline: 1rem;
+  }
+
+  .ft-main {
+    gap: 0.75rem;
+    margin-top: 1.25rem;
+  }
+
+  .ft-brand {
+    grid-column: 1 / -1;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
+  }
+
+  .ft-logo {
+    width: 140px;
+  }
+
+  .ft-tag {
+    display: none;
+  }
+
+  .ft-social {
+    margin-top: 0;
+  }
+
+  .ft-h {
+    padding-bottom: 0.35rem;
+  }
+
+  .ft-col ul {
+    margin-top: 0;
+  }
+
+  .ft-bottom {
+    margin-top: 0.75rem;
+    padding-block: 0.25rem 0;
+  }
+}

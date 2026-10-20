@@ -83,6 +83,8 @@
 .pd-breadcrumb a {
   display: inline-flex;
   align-items: center;
+  justify-content: center;
+  min-width: 44px;   /* "Home" è più stretta di 44px */
   min-height: 44px;
   color: var(--ricepaper);
   text-decoration: underline;
@@ -461,8 +463,24 @@
 }
 
 @media (max-width: 479.98px) {
+  /* Key benefits: due colonne anche sul telefono, pannelli più compatti */
   .pd-benefit-list {
-    grid-template-columns: 1fr;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 0.5rem;
+  }
+
+  .pd-benefit {
+    padding: 0.85rem;
+  }
+
+  .pd-benefit-title {
+    font-size: 1rem;
+  }
+
+  .pd-benefit p {
+    margin-top: 0.5rem;
+    font-size: 0.8125rem;
+    line-height: 1.5;
   }
 }
 
@@ -723,7 +741,7 @@
   position: relative;
   top: 0.45em;
   margin-left: 0.06em;
-  font-size: 0.2em;
+  font-size: max(0.2em, 0.75rem);
   line-height: 0;
   letter-spacing: 0;
   vertical-align: top;
@@ -908,5 +926,29 @@
     width: 0.7rem;
     height: 1rem;
     margin-bottom: 0.6rem;
+  }
+}
+
+/* ==========================================================================
+   Related products sul telefono: una riga che scorre orizzontalmente (con
+   aggancio), come le schede del Portfolio in home. I link sono
+   focalizzabili, quindi la riga si scorre anche con il Tab.
+   ========================================================================== */
+
+@media (max-width: 699.98px) {
+  .fx-grid.pd-related-grid {
+    display: flex;
+    gap: 0.75rem;
+    margin-inline: calc(-1 * var(--gutter));
+    padding: 0 var(--gutter) 0.75rem;
+    overflow-x: auto;
+    scroll-snap-type: x mandatory;
+    scroll-padding-inline: var(--gutter);
+    overscroll-behavior-x: contain;
+  }
+
+  .pd-related-grid > .fx-card {
+    flex: 0 0 72%;
+    scroll-snap-align: start;
   }
 }

@@ -656,7 +656,7 @@
   .fx-stage {
     min-height: 0;
     padding: 0.6rem;
-    padding-top: 30vh;
+    padding-top: 4rem;   /* solo una fascia di texture: il vetro è la prima cosa che si vede */
     border-radius: var(--r-card);
   }
 
@@ -722,4 +722,69 @@
 .fx-pill:hover input:not(:checked) + span {
   background-color: var(--fx-hover, rgba(25, 25, 25, 0.06));
   color: var(--hard-grey);
+}
+
+/* --------------------------------------------------------------------------
+   Schermi stretti: il campo va sopra il bottone (base.css); la lente resta
+   dentro la barra invece di finire su una riga da sola
+   -------------------------------------------------------------------------- */
+
+@media (max-width: 479.98px) {
+  .fx-search .pill-field {
+    position: relative;
+    padding-left: 0;
+  }
+
+  .fx-search-icon {
+    position: absolute;
+    top: 12px;
+    left: 1.1rem;
+    pointer-events: none;
+  }
+
+  .fx-search .pill-input {
+    padding-left: 2.9rem;
+  }
+}
+
+/* --------------------------------------------------------------------------
+   Telefono: catalogo su due colonne, schede più compatte.
+   Descrizione fermata a 3 righe solo a vista (lo screen reader la legge intera)
+   -------------------------------------------------------------------------- */
+
+@media (max-width: 599.98px) {
+  .fx-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 1.75rem 0.75rem;
+  }
+
+  .fx-card-name {
+    font-size: 1rem;
+  }
+
+  .fx-card-function {
+    font-size: 0.8125rem;
+    line-height: 1.4;
+  }
+
+  .fx-card-media {
+    margin-top: 0.6rem;
+    border-radius: var(--r-inner);
+  }
+
+  .fx-card-media img {
+    border-radius: var(--r-inner);
+  }
+
+  .fx-card-glass {
+    margin-top: 0.5rem;
+    font-size: 0.8125rem;
+  }
+
+  .fx-card-glass > p:first-child {
+    display: -webkit-box;
+    -webkit-line-clamp: 3;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+  }
 }

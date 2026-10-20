@@ -22,6 +22,7 @@
   var stage = hero.querySelector('.pd-hero-stage');
   var breadcrumb = hero.querySelector('.pd-breadcrumb');
   var word = hero.querySelector('.pd-hero-word');
+  var nameEl = hero.querySelector('.pd-hero-name');
   var inner = hero.querySelector('.pd-hero-inner');
   var DROP_RATIO = 36.3 / 54;   // larghezza / altezza della goccia (viewBox di --roelmi-drop)
   var mobileMq = window.matchMedia('(max-width: 899.98px)');
@@ -75,7 +76,23 @@
     var mobile = mobileMq.matches;
     var g = easeInOut(clamp(p / 0.75));
 
-    var startH = vh * (mobile ? 0.46 : 0.62);
+    var stageTop = stage.getBoundingClientRect().top;
+    var crumbBottom = breadcrumb ? breadcrumb.getBoundingClientRect().bottom - stageTop : 0;
+
+    // Mobile: la goccia sta nello spazio libero più grande (sopra o sotto il
+    // nome), mai sopra testo: nome e percorso restano sempre su fondo scuro
+    var startH, center;
+    if (mobile) {
+      var nr = nameEl.getBoundingClientRect();
+      var above = [crumbBottom, nr.top - stageTop];
+      var below = [nr.bottom - stageTop, vh - 16];
+      var zone = (above[1] - above[0]) >= (below[1] - below[0]) ? above : below;
+      startH = Math.max(0, Math.min(vh * 0.46, zone[1] - zone[0] - 32));
+      center = (zone[0] + zone[1]) / 2;
+    } else {
+      startH = vh * 0.62;
+      center = (crumbBottom + vh) / 2;
+    }
     var h = lerp(startH, big, g);
     // Desktop: all'inizio la goccia sta al centro dello spazio libero tra la
     // fine del nome (® compresa) e il margine destro del contenuto, poi va al
@@ -93,18 +110,12 @@
       var nameEnd = word ? range.getBoundingClientRect().right : 0;
       x = lerp((nameEnd + right - w) / 2, (window.innerWidth - w) / 2, g).toFixed(1) + 'px';
     }
-    // Desktop: goccia e nome centrati nello spazio libero sotto il percorso
-    // (non nello schermo intero). Il centro si sposta verso la metà esatta
+    // Goccia centrata nel suo spazio libero (desktop: sotto il percorso, con
+    // il nome alla stessa altezza). Il centro si sposta verso la metà esatta
     // man mano che la goccia cresce oltre lo schermo.
-    var y;
-    if (mobile) {
-      y = lerp(32, 50, g);
-    } else {
-      var stageTop = stage.getBoundingClientRect().top;
-      var free = breadcrumb ? breadcrumb.getBoundingClientRect().bottom - stageTop : 0;
-      var center = (free + vh) / 2;
-      var wanted = lerp(center, vh / 2, g);
-      y = h < vh ? ((wanted - h / 2) / (vh - h)) * 100 : 50;
+    var wanted = lerp(center, vh / 2, g);
+    var y = h < vh ? ((wanted - h / 2) / (vh - h)) * 100 : 50;
+    if (!mobile) {
       // La parola (non tutto il blocco con l'etichetta) a metà altezza della goccia
       var offset = word ? word.offsetTop + word.offsetHeight / 2 : 0;
       hero.style.setProperty('--name-top', (center - offset).toFixed(1) + 'px');
