@@ -149,9 +149,10 @@
             <p class="fx-intro">Explore our full portfolio of active and functional ingredients. Filter by market, technology or certifications to find your perfect match.</p>
 
             <form class="fx-search" role="search" action="ingredient-finder.html" method="get">
-              <label class="fx-search-label" for="fxSearch">Search ingredient</label>
+              <label class="sr-only" for="fxSearch">Search ingredient</label>
               <div class="pill-field">
-                <input class="pill-input" id="fxSearch" name="q" type="search" autocomplete="off">
+                <svg class="fx-search-icon" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><circle cx="10.5" cy="10.5" r="6.5"/><path d="M15.5 15.5L21 21"/></svg>
+                <input class="pill-input" id="fxSearch" name="q" type="search" autocomplete="off" placeholder="Search ingredient">
                 <button class="pill-submit" type="submit">Search</button>
               </div>
             </form>

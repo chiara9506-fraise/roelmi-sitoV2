@@ -88,11 +88,24 @@
   margin-top: 1.5rem;
 }
 
-.fx-search-label {
-  display: block;
-  margin-bottom: 0.6rem;
-  font-size: var(--fs-small);
-  font-weight: 600;
+/* "Search ingredient" dentro la barra: lente + testo guida.
+   L'etichetta vera resta per gli screen reader (sr-only).
+   Sul vetro scuro il testo guida è Ricepaper pieno (niente grigio sul vetro) */
+.fx-search .pill-field {
+  padding-left: 1.1rem;
+}
+
+.fx-search-icon {
+  flex: none;
+  width: 20px;
+  height: 20px;
+  fill: none;
+  stroke: var(--ricepaper);
+  stroke-width: 1.75;
+  stroke-linecap: round;
+}
+
+.fx-search .pill-input::placeholder {
   color: var(--ricepaper);
 }
 
