@@ -951,4 +951,11 @@
     flex: 0 0 72%;
     scroll-snap-align: start;
   }
+
+  /* Nella riga che scorre non c'è una griglia: niente righe condivise
+     (subgrid, in finder.css), la scheda torna un blocco normale */
+  .fx-grid.pd-related-grid > .fx-card,
+  .fx-grid.pd-related-grid > .fx-card > article {
+    display: block;
+  }
 }
