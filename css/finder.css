@@ -788,3 +788,26 @@
     overflow: hidden;
   }
 }
+
+/* --------------------------------------------------------------------------
+   Schede allineate tra loro: nome, funzione, mercato e immagine stanno su
+   righe condivise dalla griglia (subgrid), così le immagini partono tutte
+   alla stessa altezza anche se un nome va a capo. Browser senza subgrid:
+   schede come prima.
+   -------------------------------------------------------------------------- */
+
+@supports (grid-template-rows: subgrid) {
+  .fx-grid > .fx-card {
+    display: grid;
+    grid-row: span 4;
+    grid-template-rows: subgrid;
+    row-gap: 0;
+  }
+
+  .fx-grid > .fx-card > article {
+    grid-row: 1 / -1;
+    display: grid;
+    grid-template-rows: subgrid;
+    row-gap: 0;
+  }
+}
