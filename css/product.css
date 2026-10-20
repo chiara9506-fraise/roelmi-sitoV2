@@ -718,11 +718,12 @@
   font-size: clamp(3.25rem, 1rem + 12vw, 14rem);
 }
 
+/* ®: piccola e appoggiata all'altezza delle maiuscole */
 .pd-reg {
   position: relative;
-  top: -0.05em;
-  margin-left: 0.04em;
-  font-size: 0.3em;
+  top: 0.45em;
+  margin-left: 0.06em;
+  font-size: 0.2em;
   line-height: 0;
   letter-spacing: 0;
   vertical-align: top;
