@@ -188,13 +188,17 @@
     </section>
 
     <!-- ==================================================================
-         3 · KEY BENEFITS (chiaro, riquadro scuro) — Force Field (reticolo luminoso) + 4 pannelli di vetro
+         3 · KEY BENEFITS (scuro) — Force Field sul fondo della sezione
+         (js/force-field.js) + riquadro con texture + 4 pannelli di vetro
          ================================================================== -->
-    <section class="pd-benefits section theme-light grain" aria-labelledby="pd-benefits-title">
+    <section class="pd-benefits section theme-dark" aria-labelledby="pd-benefits-title" data-force-field-host>
+      <!-- Force Field: reticolo di esagoni Ocean, tenue e lento, decorativo -->
+      <canvas class="pd-field" aria-hidden="true" data-force-field='{"color":[0.259,0.439,0.62],"gridReveal":"both","gridOpacity":0.12,"gridRevealStrength":0.7,"gridRevealRadius":320,"gridFade":0.85,"lineWidth":0.022,"hoverGlow":0.18,"hoverRadius":420,"hoverCharge":0.45,"flashSpeed":0.3,"flashIntensity":0.05,"edgeGlow":0,"rippleSpeed":0.32,"rippleDuration":2.6,"rippleIntensity":0.06,"impactRadius":0.12,"refraction":14,"bloom":0.6,"grain":0.08,"smoothing":0.08}'></canvas>
       <div class="container">
-        <div class="pd-benefits-stage theme-dark" data-force-field-host>
-          <!-- Force Field (js/force-field.js): reticolo di esagoni Ocean, tenue e lento, decorativo -->
-          <canvas class="pd-field" aria-hidden="true" data-force-field='{"color":[0.259,0.439,0.62],"gridReveal":"both","gridOpacity":0.12,"gridRevealStrength":0.7,"gridRevealRadius":320,"gridFade":0.85,"lineWidth":0.022,"hoverGlow":0.18,"hoverRadius":420,"hoverCharge":0.45,"flashSpeed":0.3,"flashIntensity":0.05,"edgeGlow":0.12,"rippleSpeed":0.32,"rippleDuration":2.6,"rippleIntensity":0.06,"impactRadius":0.12,"refraction":14,"bloom":0.6,"grain":0.08,"smoothing":0.08}'></canvas>
+        <div class="pd-benefits-stage">
+          <div class="pd-bg" aria-hidden="true">
+            <img src="images/product/texture-17.jpg" alt="" loading="lazy" decoding="async">
+          </div>
 
           <h2 class="pd-section-title pd-benefits-head glass" id="pd-benefits-title" data-reveal>
             <span class="eyebrow">Why CytoFruit®</span>
