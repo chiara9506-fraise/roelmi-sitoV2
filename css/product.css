@@ -959,3 +959,25 @@
     display: block;
   }
 }
+
+/* ==========================================================================
+   Key benefits: Force Field sul fondo nero (js/force-field.js) al posto
+   della texture. Decorativo; il testo resta sul vetro scuro.
+   ========================================================================== */
+
+.pd-field {
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  width: 100%;
+  height: 100%;
+  display: block;
+}
+
+/* Key benefits ora è chiara (riquadro scuro dentro): tra due sezioni chiare
+   lo spazio sarebbe doppio (fondo dell'una + cima dell'altra), quindi la
+   seconda parte senza margine sopra. Resta un solo --section-y */
+.pd-desc.theme-light + .pd-benefits.theme-light,
+.pd-benefits.theme-light + .theme-light {
+  padding-top: 0;
+}

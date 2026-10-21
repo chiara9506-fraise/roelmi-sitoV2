@@ -435,9 +435,10 @@
 
     <!-- ==================================================================
          6 · NIP® — OUR SUSTAINABILITY APPROACH (scuro)
-         Texture in primo piano + pannelli di vetro
+         Force Field sul fondo nero (js/force-field.js) + texture in primo piano + pannelli di vetro
          ================================================================== -->
-    <section class="nip section theme-dark" id="nip" aria-labelledby="nip-title">
+    <section class="nip section theme-dark" id="nip" aria-labelledby="nip-title" data-force-field-host>
+      <canvas class="nip-field" aria-hidden="true" data-force-field='{"color":[0.259,0.439,0.62],"gridReveal":"both","gridOpacity":0.12,"gridRevealStrength":0.7,"gridRevealRadius":320,"gridFade":0.85,"lineWidth":0.022,"hoverGlow":0.18,"hoverRadius":420,"hoverCharge":0.45,"flashSpeed":0.3,"flashIntensity":0.05,"edgeGlow":0,"rippleSpeed":0.32,"rippleDuration":2.6,"rippleIntensity":0.06,"impactRadius":0.12,"refraction":14,"bloom":0.6,"grain":0.08,"smoothing":0.08}'></canvas>
       <div class="container">
         <div class="nip-stage">
           <div class="nip-texture" aria-hidden="true">
@@ -748,9 +749,10 @@
   <!-- ====================================================================
        POP-UP EVENTO (come in SITO 1): compare dopo 3 secondi in basso a
        destra; si chiude con × o Esc e ricompare a ogni caricamento.
+       Chiuso, resta una linguetta sul bordo destro che lo riapre.
        Non sposta il focus: lo screen reader lo annuncia (aria-live).
        ==================================================================== -->
-  <aside class="site-popup" id="sitePopup" aria-labelledby="sitePopupTitle" aria-live="polite" hidden>
+  <aside class="site-popup" id="sitePopup" aria-labelledby="sitePopupTitle" aria-live="polite" tabindex="-1" hidden>
     <button class="site-popup-close" id="sitePopupClose" type="button" aria-label="Close">
       <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M6 6l12 12M18 6L6 18"/></svg>
     </button>
@@ -759,6 +761,7 @@
     <p class="site-popup-desc">We'll be at In-Cosmetics Global, April 8–10. Discover our latest sustainable active ingredients for personal care.</p>
     <a class="site-popup-link" href="#">Event details</a>
   </aside>
+  <button class="site-popup-tab" id="sitePopupTab" type="button" aria-controls="sitePopup" aria-expanded="false" hidden>Meet us in Amsterdam</button>
   <!-- JS -->
   <script src="js/motion.js"></script>
   <script src="js/reveal.js" defer></script>
@@ -767,6 +770,7 @@
   <script src="js/who.js" defer></script>
   <script src="js/impact.js" defer></script>
   <script src="js/nip.js" defer></script>
+  <script src="js/force-field.js" defer></script>
   <script src="js/presence.js" defer></script>
   <script src="js/blog.js" defer></script>
   <script src="js/newsletter.js" defer></script>

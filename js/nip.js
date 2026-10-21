@@ -1,5 +1,5 @@
 /* ==========================================================================
-   NIP® — zoom lentissimo della texture e profondità dei pannelli di vetro
+   NIP® — zoom lentissimo della texture (se c'è) e profondità dei pannelli di vetro
    mentre la sezione attraversa lo schermo.
    Con Stop animation / reduced-motion: tutto fermo.
    (I numeri che contano li gestisce impact.js, comune a tutti gli .stat-value)
@@ -9,8 +9,8 @@
   'use strict';
 
   var stage = document.querySelector('.nip-stage');
-  var img = stage && stage.querySelector('.nip-texture img');
-  if (!img) return;
+  if (!stage) return;
+  var img = stage.querySelector('.nip-texture img');
 
   function motionOn() {
     return window.RoelmiMotion ? !window.RoelmiMotion.isPaused() : true;
@@ -26,14 +26,14 @@
 
   function render() {
     if (!motionOn()) {
-      img.style.transform = '';
+      if (img) img.style.transform = '';
       layers.forEach(function (l) { l.el.style.translate = ''; });
       return;
     }
     var r = stage.getBoundingClientRect();
     var vh = window.innerHeight;
     var p = Math.max(0, Math.min(1, (vh - r.top) / (vh + r.height)));
-    img.style.transform = 'scale(' + (1 + p * 0.12).toFixed(4) + ')';
+    if (img) img.style.transform = 'scale(' + (1 + p * 0.12).toFixed(4) + ')';
     layers.forEach(function (l) {
       l.el.style.translate = '0 ' + ((p - 0.5) * l.depth).toFixed(1) + 'px';
     });

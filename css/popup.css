@@ -112,3 +112,92 @@
     bottom: 4.5rem;
   }
 }
+
+/* --------------------------------------------------------------------------
+   Linguetta laterale: compare quando il pop-up è chiuso e lo riapre.
+   Bordo destro, a metà altezza; testo verticale dal basso verso l'alto.
+   Antique pieno + Hard Grey (10.4:1); larga 44px (target touch).
+   -------------------------------------------------------------------------- */
+
+.site-popup-tab {
+  position: fixed;
+  top: 50%;
+  right: 0;
+  z-index: 90;
+  min-width: 44px;
+  padding: 1.1rem 0.75rem;
+  border-radius: 0 var(--r-inner) var(--r-inner) 0;   /* ruotata di 180°: angoli tondi a sinistra */
+  background-color: var(--antique);
+  color: var(--hard-grey);
+  box-shadow: 0 8px 24px rgba(25, 25, 25, 0.18);
+  font-size: var(--fs-small);
+  font-weight: 600;
+  line-height: 1;
+  white-space: nowrap;
+  writing-mode: vertical-rl;
+  transform: translate3d(100%, -50%, 0) rotate(180deg);
+  opacity: 0;
+  cursor: pointer;
+  transition:
+    transform 0.6s var(--ease-out),
+    opacity 0.45s var(--ease-out),
+    padding var(--dur-ui) var(--ease-out);
+}
+
+.site-popup-tab.is-visible {
+  transform: translate3d(0, -50%, 0) rotate(180deg);
+  opacity: 1;
+}
+
+.site-popup-tab:hover {
+  padding-right: 1rem;
+}
+
+/* Contorno dentro la linguetta (fuori finirebbe oltre il bordo dello schermo) */
+.site-popup-tab:focus-visible {
+  outline: 2px solid var(--hard-grey);
+  outline-offset: -5px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .site-popup-tab,
+  .site-popup-tab.is-visible {
+    transform: translate3d(0, -50%, 0) rotate(180deg);
+    transition: opacity 0.01ms;
+  }
+}
+
+/* Telefono: più piccola e più in basso (non a metà schermo).
+   A vista è larga 28px; l'area di tocco resta 44px grazie a ::after,
+   che la allarga verso l'interno della pagina */
+@media (max-width: 559.98px) {
+  .site-popup-tab {
+    top: auto;
+    bottom: 7.5rem;
+    min-width: 0;
+    padding: 0.75rem 0.5rem;
+    font-size: 0.75rem;
+    transform: translate3d(100%, 0, 0) rotate(180deg);
+  }
+
+  .site-popup-tab.is-visible {
+    transform: translate3d(0, 0, 0) rotate(180deg);
+  }
+
+  .site-popup-tab::after {
+    content: "";
+    position: absolute;
+    inset: 0 -16px 0 0;   /* ruotata: il lato destro è quello verso la pagina */
+  }
+
+  .site-popup-tab:hover {
+    padding-right: 0.5rem;
+  }
+}
+
+@media (max-width: 559.98px) and (prefers-reduced-motion: reduce) {
+  .site-popup-tab,
+  .site-popup-tab.is-visible {
+    transform: translate3d(0, 0, 0) rotate(180deg);
+  }
+}

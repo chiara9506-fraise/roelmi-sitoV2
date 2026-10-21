@@ -188,14 +188,13 @@
     </section>
 
     <!-- ==================================================================
-         3 · KEY BENEFITS (scuro) — texture + 4 pannelli di vetro
+         3 · KEY BENEFITS (chiaro, riquadro scuro) — Force Field (reticolo luminoso) + 4 pannelli di vetro
          ================================================================== -->
-    <section class="pd-benefits section theme-dark" aria-labelledby="pd-benefits-title">
+    <section class="pd-benefits section theme-light grain" aria-labelledby="pd-benefits-title">
       <div class="container">
-        <div class="pd-benefits-stage">
-          <div class="pd-bg" aria-hidden="true">
-            <img src="images/who/texture-8.jpg" alt="" loading="lazy" decoding="async">
-          </div>
+        <div class="pd-benefits-stage theme-dark" data-force-field-host>
+          <!-- Force Field (js/force-field.js): reticolo di esagoni Ocean, tenue e lento, decorativo -->
+          <canvas class="pd-field" aria-hidden="true" data-force-field='{"color":[0.259,0.439,0.62],"gridReveal":"both","gridOpacity":0.12,"gridRevealStrength":0.7,"gridRevealRadius":320,"gridFade":0.85,"lineWidth":0.022,"hoverGlow":0.18,"hoverRadius":420,"hoverCharge":0.45,"flashSpeed":0.3,"flashIntensity":0.05,"edgeGlow":0.12,"rippleSpeed":0.32,"rippleDuration":2.6,"rippleIntensity":0.06,"impactRadius":0.12,"refraction":14,"bloom":0.6,"grain":0.08,"smoothing":0.08}'></canvas>
 
           <h2 class="pd-section-title pd-benefits-head glass" id="pd-benefits-title" data-reveal>
             <span class="eyebrow">Why CytoFruit®</span>
@@ -290,11 +289,11 @@
     </section>
 
     <!-- ==================================================================
-         5 · RICHIESTA (scuro) — texture + vetro
+         5 · RICHIESTA (fondo Olive) — texture + vetro scuro (il riquadro resta scuro: bottoni e testo come su Hard Grey)
          ================================================================== -->
-    <section class="pd-contact section theme-dark" id="contact" aria-labelledby="pd-contact-title">
+    <section class="pd-contact section theme-olive grain" id="contact" aria-labelledby="pd-contact-title">
       <div class="container">
-        <div class="pd-stage pd-stage--cta">
+        <div class="pd-stage pd-stage--cta theme-dark">
           <div class="pd-bg" aria-hidden="true">
             <img src="images/product/texture-16.jpg" alt="" loading="lazy" decoding="async">
           </div>
@@ -329,7 +328,6 @@
                 <img src="images/portfolio/texture-6.jpg" alt="" loading="lazy" decoding="async">
                 <div class="fx-card-glass">
                   <p>Hop cone bioactives via supercritical CO₂ extraction, stabilised in powder form — supporting weight management and natural GLP-1 release.</p>
-                  <p class="fx-card-meta">Nutraceutical, Nature</p>
                 </div>
               </div>
             </article>
@@ -343,7 +341,6 @@
                 <img src="images/portfolio/texture-1.jpg" alt="" loading="lazy" decoding="async">
                 <div class="fx-card-glass">
                   <p>Olive glycerides and hyaluronic acid combined in a patented matrix — delivering hydration and skin nourishment in anhydrous color cosmetic formulations.</p>
-                  <p class="fx-card-meta">Personal Care, Biotech</p>
                 </div>
               </div>
             </article>
@@ -435,5 +432,6 @@
   <script src="js/reveal.js" defer></script>
   <script src="js/header.js" defer></script>
   <script src="js/product-hero.js" defer></script>
+  <script src="js/force-field.js" defer></script>
 </body>
 </html>

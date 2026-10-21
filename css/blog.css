@@ -287,3 +287,18 @@
     grid-column: 3;
   }
 }
+
+/* Cerchi con la freccia in Olive pieno (accento della palette), freccia
+   Hard Grey (9.2:1). In hover / focus la riga li riempie di Ricepaper */
+.post-arrow {
+  border-color: var(--olive);
+  background-color: var(--olive);
+  color: var(--hard-grey);
+}
+
+.post:hover .post-arrow,
+.post:focus-within .post-arrow {
+  border-color: var(--ricepaper);
+  background-color: var(--ricepaper);
+  color: var(--hard-grey);
+}

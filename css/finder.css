@@ -458,16 +458,12 @@
   overflow: hidden;
 }
 
-.fx-card-meta {
-  margin-top: 0.5rem;
-  font-weight: 600;
-}
-
+/* Certificazioni (sotto la descrizione) */
 .fx-card-tags {
   display: flex;
   flex-wrap: wrap;
   gap: 0.3rem;
-  margin-top: 0.5rem;
+  margin-top: 0.6rem;
 }
 
 .fx-card-tags li {
@@ -809,5 +805,13 @@
     display: grid;
     grid-template-rows: subgrid;
     row-gap: 0;
+  }
+}
+
+/* Telefono: schede su due colonne, niente certificazioni (restano nei
+   filtri e nella pagina prodotto) */
+@media (max-width: 599.98px) {
+  .fx-card-tags {
+    display: none;
   }
 }

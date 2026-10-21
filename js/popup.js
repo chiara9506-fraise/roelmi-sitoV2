@@ -2,6 +2,7 @@
    Pop-up evento (home)
    - Compare dopo 3 secondi, come in SITO 1
    - Si chiude con × o Esc; ricompare a ogni caricamento della pagina
+   - Chiuso, resta una linguetta sul bordo destro: un clic lo riapre
    - Non ruba il focus: lo screen reader lo sente da una riga di stato
    ========================================================================== */
 
@@ -10,6 +11,7 @@
 
   var popup = document.getElementById('sitePopup');
   var close = document.getElementById('sitePopupClose');
+  var tab = document.getElementById('sitePopupTab');
   if (!popup || !close) return;
 
   var DELAY = 3000;
@@ -21,26 +23,52 @@
   document.body.appendChild(status);
   popup.removeAttribute('aria-live');
 
-  function show() {
-    popup.hidden = false;
+  // Mostra / nasconde con la dissolvenza del CSS (classe is-visible)
+  function reveal(el) {
+    el.hidden = false;
     requestAnimationFrame(function () {
-      requestAnimationFrame(function () { popup.classList.add('is-visible'); });
+      requestAnimationFrame(function () { el.classList.add('is-visible'); });
     });
     // Rete di sicurezza se i fotogrammi non arrivano
-    setTimeout(function () { popup.classList.add('is-visible'); }, 120);
+    setTimeout(function () { el.classList.add('is-visible'); }, 120);
+  }
+
+  function conceal(el) {
+    el.classList.remove('is-visible');
+    setTimeout(function () { if (!el.classList.contains('is-visible')) el.hidden = true; }, 450);
+  }
+
+  function show() {
+    reveal(popup);
     status.textContent = 'Event: ' + popup.querySelector('.site-popup-title').textContent + '. Press Escape to close.';
   }
 
   function hide(returnFocus) {
     var hadFocus = popup.contains(document.activeElement);
-    popup.classList.remove('is-visible');
-    setTimeout(function () { popup.hidden = true; }, 450);
+    conceal(popup);
     status.textContent = '';
-    // Se il focus era nel pop-up, va al contenuto principale
-    if (returnFocus && hadFocus) {
-      var main = document.getElementById('main');
-      if (main) main.focus({ preventScroll: true });
+    if (tab) {
+      tab.setAttribute('aria-expanded', 'false');
+      reveal(tab);
     }
+    // Se il focus era nel pop-up, va alla linguetta che lo riapre
+    if (returnFocus && hadFocus) {
+      if (tab) tab.focus({ preventScroll: true });
+      else {
+        var main = document.getElementById('main');
+        if (main) main.focus({ preventScroll: true });
+      }
+    }
+  }
+
+  // Linguetta: riapre il pop-up e ci porta il focus
+  if (tab) {
+    tab.addEventListener('click', function () {
+      conceal(tab);
+      tab.setAttribute('aria-expanded', 'true');
+      reveal(popup);
+      popup.focus({ preventScroll: true });
+    });
   }
 
   close.addEventListener('click', function () { hide(true); });

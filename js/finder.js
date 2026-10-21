@@ -123,8 +123,8 @@
 
     var glass = el('div', 'fx-card-glass');
     glass.appendChild(el('p', '', item.description));
-    var meta = [].concat(asList(item.market), asList(item.technology), asList(item.type)).join(', ');
-    glass.appendChild(el('p', 'fx-card-meta', meta));
+    // Sotto la descrizione solo le certificazioni (mercato, tecnologia e tipo
+    // non si ripetono: il mercato è già nell'etichetta sopra l'immagine)
     if (asList(item.certifications).length) {
       var tags = el('ul', 'fx-card-tags');
       tags.setAttribute('aria-label', 'Certifications');
